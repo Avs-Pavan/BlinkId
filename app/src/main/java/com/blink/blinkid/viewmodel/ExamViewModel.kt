@@ -26,17 +26,17 @@ class ExamViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-    private val _exams = MutableStateFlow<NetworkResult<List<Exam>>>(NetworkResult.Loading)
+    private val _exams = MutableStateFlow<NetworkResult<List<Exam>>>(NetworkResult.Initial)
     val exams: StateFlow<NetworkResult<List<Exam>>> = _exams.asStateFlow()
 
-    private val _exam = MutableStateFlow<NetworkResult<Exam>>(NetworkResult.Loading)
+    private val _exam = MutableStateFlow<NetworkResult<Exam>>(NetworkResult.Initial)
     val exam: StateFlow<NetworkResult<Exam>> = _exam.asStateFlow()
 
-    private val _students = MutableStateFlow<NetworkResult<List<User>>>(NetworkResult.Loading)
+    private val _students = MutableStateFlow<NetworkResult<List<User>>>(NetworkResult.Initial)
     val students: StateFlow<NetworkResult<List<User>>> = _students.asStateFlow()
 
 
-    private val _admins = MutableStateFlow<NetworkResult<List<User>>>(NetworkResult.Loading)
+    private val _admins = MutableStateFlow<NetworkResult<List<User>>>(NetworkResult.Initial)
     val admins: StateFlow<NetworkResult<List<User>>> = _admins.asStateFlow()
 
     init {
@@ -48,10 +48,6 @@ class ExamViewModel @Inject constructor(
 
             _exams.value = NetworkResult.Loading
             examRepository.getExams().collect {
-                Log.e(
-                    "ExamViewModel",
-                    "getExams: ${(it as NetworkResult.Success).body?.joinToString()}"
-                )
                 _exams.value = it
             }
         }
@@ -77,6 +73,7 @@ class ExamViewModel @Inject constructor(
 
     fun addExam(exam: Exam) {
         viewModelScope.launch {
+            _exam.value = NetworkResult.Loading
             examRepository.addExam(exam).collect {
                 _exam.value = it
             }
@@ -85,6 +82,7 @@ class ExamViewModel @Inject constructor(
 
     fun updateExam(examId: String, exam: Exam) {
         viewModelScope.launch {
+            _exam.value = NetworkResult.Loading
             examRepository.updateExam(examId, exam).collect {
                 _exam.value = it
             }
@@ -93,6 +91,7 @@ class ExamViewModel @Inject constructor(
 
     fun addStudentToExam(examId: String, userId: String) {
         viewModelScope.launch {
+            _exam.value = NetworkResult.Loading
             examRepository.addStudentToExam(examId, userId).collect {
                 _exam.value = it
             }
@@ -101,6 +100,7 @@ class ExamViewModel @Inject constructor(
 
     fun addAdminToExam(examId: String, userId: String) {
         viewModelScope.launch {
+            _exam.value = NetworkResult.Loading
             examRepository.addAdminToExam(examId, userId).collect {
                 _exam.value = it
             }
@@ -109,6 +109,7 @@ class ExamViewModel @Inject constructor(
 
     fun deleteExam(examId: String, userId: String) {
         viewModelScope.launch {
+            _exam.value = NetworkResult.Loading
             examRepository.deleteExam(examId, userId).collect {
                 _exam.value = it
             }
@@ -117,6 +118,7 @@ class ExamViewModel @Inject constructor(
 
     fun deleteAdminFromExam(examId: String, userId: String) {
         viewModelScope.launch {
+            _exam.value = NetworkResult.Loading
             examRepository.deleteAdminFromExam(examId, userId).collect {
                 _exam.value = it
             }
@@ -125,6 +127,7 @@ class ExamViewModel @Inject constructor(
 
     fun deleteStudentFromExam(examId: String, userId: String) {
         viewModelScope.launch {
+            _exam.value = NetworkResult.Loading
             examRepository.deleteStudentFromExam(examId, userId).collect {
                 _exam.value = it
             }
@@ -134,6 +137,7 @@ class ExamViewModel @Inject constructor(
 
     fun getExam(examId: String) {
         viewModelScope.launch {
+            _exam.value = NetworkResult.Loading
             examRepository.getExam(examId).collect {
                 _exam.value = it
             }

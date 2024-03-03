@@ -42,7 +42,7 @@ data class Exam(
     val examDuration: String,
     val examLocation: String,
     val examTime: String,
-    val id: Int,
+    val id: Int? = null,
     val name: String,
     val users: List<User> = emptyList()
 )

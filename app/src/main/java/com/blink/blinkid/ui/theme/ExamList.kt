@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -36,7 +38,7 @@ import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.viewmodel.ExamViewModel
 
 @Composable
-fun ExamListScreen(navController: NavController, examViewModel: ExamViewModel = hiltViewModel()) {
+fun ExamListScreen(navController: NavController, examViewModel: ExamViewModel) {
     var examList by remember { mutableStateOf<List<Exam>>(emptyList()) }
     var isLoading by remember { mutableStateOf(false) }
 
@@ -78,7 +80,7 @@ fun ExamListScreen(navController: NavController, examViewModel: ExamViewModel = 
     Box(modifier = Modifier.padding(10.dp)) {
 
         if (isLoading) {
-            CircularProgressIndicatorSample()
+            ProgressBar()
         } else {
             ExamList(examList) {
                 navController.navigate("examDetail/${it.id}")
@@ -118,6 +120,7 @@ fun ExamRow(exam: Exam, onUserClick: (Exam) -> Unit) {
             }
         }
     }
+    Spacer(modifier = Modifier.height(10.dp))
 }
 
 @Preview
@@ -145,12 +148,13 @@ fun ExamList(exams: List<Exam>, onUserClick: (Exam) -> Unit) {
             ExamRow(exam, onUserClick)
         }
     }
+
 }
 
 
 @Preview
 @Composable
-fun CircularProgressIndicatorSample() {
+fun ProgressBar() {
 
     Column(
         modifier = Modifier
