@@ -9,6 +9,9 @@ import com.blink.blinkid.model.network.ApiService
 import com.blink.blinkid.repo.ExamRepository
 import com.blink.blinkid.repo.LoginRepository
 import com.blink.blinkid.repo.UserRepository
+import com.google.firebase.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -31,11 +34,6 @@ object AppModule {
         return GsonBuilder().create()
     }
 
-    @Provides
-    @Singleton
-    fun provideLoggedInUser(localDataStore: LocalDataStore): User {
-        return localDataStore.getObject(Constants.USER, object : TypeToken<User>() {})!!
-    }
 
     @Provides
     @Singleton
@@ -65,6 +63,18 @@ object AppModule {
     @Singleton
     fun provideUserRepository(apiService: ApiService): UserRepository {
         return UserRepository(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebase(): FirebaseStorage {
+        return FirebaseStorage.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRef(): StorageReference {
+        return FirebaseStorage.getInstance().reference
     }
 
 

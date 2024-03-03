@@ -7,5 +7,6 @@ object Constants {
     const val TOKEN = "TOKEN"
     const val USER = "USER"
     const val IS_LOGGED_IN = "IS_LOGGED_IN"
+    const val BUCKET_NAME = "elasticbeanstalk-us-east-2-211125631243"
 
 }

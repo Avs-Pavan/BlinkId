@@ -44,4 +44,9 @@ class LoginViewModel @Inject constructor(
     }
 
 
+    fun logout() {
+        localDataStore.saveBoolean(Constants.IS_LOGGED_IN, false)
+        localDataStore.clearPreferences()
+    }
+
 }

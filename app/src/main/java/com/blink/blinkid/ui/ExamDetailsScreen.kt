@@ -170,7 +170,7 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
                             StudentList(true, students) { user ->
                                 // add invigilator
                                 exam?.id?.let { examId ->
-                                    viewModel.addStudentToExam(examId = examId, user.id)
+                                    user.id?.let { viewModel.addStudentToExam(examId = examId, it) }
                                 }
                                 sheetVisible = false
                             }
@@ -217,7 +217,7 @@ fun CircularButton(
 fun HeaderText(text: String) {
     Column(
         modifier = Modifier
-            .background(Purple40)
+            .background(MaterialTheme.colorScheme.primary)
             .fillMaxWidth()
             .padding(10.dp)
     ) {

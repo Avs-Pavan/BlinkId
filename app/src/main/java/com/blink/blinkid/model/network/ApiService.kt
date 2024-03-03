@@ -1,5 +1,6 @@
 package com.blink.blinkid.model.network
 
+import com.blink.blinkid.model.AddStudentRequest
 import com.blink.blinkid.model.Exam
 import com.blink.blinkid.model.LoginRequest
 import com.blink.blinkid.model.LoginResponse
@@ -18,6 +19,12 @@ interface ApiService {
 
     @GET("users")
     suspend fun getUsers(): Response<List<User>>
+
+    @POST("users")
+    suspend fun addUser(@Body user: User): Response<User>
+
+    @POST("users/student")
+    suspend fun addStudent(@Body addStudentRequest: AddStudentRequest): Response<User>
 
     @GET("users/students")
     suspend fun getStudents(): Response<List<User>>

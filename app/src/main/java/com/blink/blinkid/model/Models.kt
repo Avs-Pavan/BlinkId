@@ -17,7 +17,7 @@ data class LoginResponse(
 
 data class User(
     val email: String,
-    val id: Int,
+    val id: Int? = null,
     val images: List<Image>,
     val password: String,
     val roles: List<Role>,
@@ -45,4 +45,11 @@ data class Exam(
     val id: Int? = null,
     val name: String,
     val users: List<User> = emptyList()
+)
+
+data class AddStudentRequest(
+    val email: String,
+    val password: String,
+    val username: String,
+    val image: String
 )

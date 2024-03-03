@@ -69,102 +69,100 @@ fun AddExamScreen(
     var location by remember { mutableStateOf("") }
     var duration by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-
-        Text(
-            text = "Add New Exam",
-            style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Name") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = description,
-            onValueChange = { description = it },
-            label = { Text("Description") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = date,
-            onValueChange = { date = it },
-            label = { Text("Date") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = time,
-            onValueChange = { time = it },
-            label = { Text("Time") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = location,
-            onValueChange = { location = it },
-            label = { Text("Location") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = duration,
-            onValueChange = { duration = it },
-            label = { Text("Duration") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = {
-                if (name.isEmpty() || description.isEmpty() || date.isEmpty()) {
-                    toastMessage = "Please fill all fields"
-                } else {
-                    viewModel.addExam(
-                        Exam(
-                            name = name,
-                            description = description,
-                            examDate = date,
-                            examTime = time,
-                            examLocation = location,
-                            examDuration = duration
-                        )
-                    )
-                }
-            },
+    Column {
+        HeaderText(text = "Add Exam")
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp)
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            Text(text = "Add Exam")
-        }
 
-        if (response is NetworkResult.Loading) {
-            ProgressBar()
-        }
+            Spacer(modifier = Modifier.height(16.dp))
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Name") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = description,
+                onValueChange = { description = it },
+                label = { Text("Description") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = date,
+                onValueChange = { date = it },
+                label = { Text("Date") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = time,
+                onValueChange = { time = it },
+                label = { Text("Time") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = location,
+                onValueChange = { location = it },
+                label = { Text("Location") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = duration,
+                onValueChange = { duration = it },
+                label = { Text("Duration") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    if (name.isEmpty() || description.isEmpty() || date.isEmpty()) {
+                        toastMessage = "Please fill all fields"
+                    } else {
+                        viewModel.addExam(
+                            Exam(
+                                name = name,
+                                description = description,
+                                examDate = date,
+                                examTime = time,
+                                examLocation = location,
+                                examDuration = duration
+                            )
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+            ) {
+                Text(text = "Add Exam")
+            }
+
+            if (response is NetworkResult.Loading) {
+                ProgressBar()
+            }
+
+        }
     }
 }

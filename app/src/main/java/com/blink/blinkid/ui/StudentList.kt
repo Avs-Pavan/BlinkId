@@ -1,5 +1,6 @@
 package com.blink.blinkid.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -152,7 +153,7 @@ fun UserCardWithDelete(user: User, deleteUser: (Int) -> Unit) {
                 modifier = Modifier
                     .height(60.dp)
                     .width(60.dp)
-                    .padding(5.dp)
+                    .padding(0.dp)
                     .clip(CircleShape)
                     .graphicsLayer(shadowElevation = 2.0f)
             )
@@ -194,7 +195,7 @@ fun UserCardWithDelete(user: User, deleteUser: (Int) -> Unit) {
                     color = Color.Red,
                     fontSize = 14.sp,
                     modifier = Modifier.clickable {
-                        deleteUser(user.id)
+                        user.id?.let { deleteUser(it) }
                     }
                 )
             }

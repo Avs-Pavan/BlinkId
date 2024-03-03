@@ -2,11 +2,15 @@ package com.blink.blinkid.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blink.blinkid.commons.LocalDataStore
 import com.blink.blinkid.model.Exam
 import com.blink.blinkid.model.User
 import com.blink.blinkid.commons.NetworkResult
+import com.blink.blinkid.model.AddStudentRequest
+import com.blink.blinkid.model.Constants
 import com.blink.blinkid.repo.ExamRepository
 import com.blink.blinkid.repo.UserRepository
+import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +23,7 @@ import javax.inject.Inject
 class ExamViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val examRepository: ExamRepository,
-    private val user: User
+    private val localDataStore: LocalDataStore
 ) : ViewModel() {
 
     private val _selectedExam = MutableStateFlow<Exam?>(null)
@@ -41,8 +45,31 @@ class ExamViewModel @Inject constructor(
     private val _admins = MutableStateFlow<NetworkResult<List<User>>>(NetworkResult.Initial)
     val admins: StateFlow<NetworkResult<List<User>>> = _admins.asStateFlow()
 
+    private val _user = MutableStateFlow<NetworkResult<User>>(NetworkResult.Initial)
+    val user: StateFlow<NetworkResult<User>> = _user.asStateFlow()
+
+    private lateinit var loggedInUser: User
+
     init {
         getExams()
+        getLoggedInUser()
+    }
+
+    private fun getLoggedInUser() {
+        viewModelScope.launch {
+            localDataStore.getObject(Constants.USER, object : TypeToken<User>() {})?.let {
+                loggedInUser = it
+            }
+        }
+    }
+
+    fun addStudent(addStudentRequest: AddStudentRequest) {
+        viewModelScope.launch {
+            _user.value = NetworkResult.Loading
+            examRepository.addStudent(addStudentRequest).collect {
+                _user.value = it
+            }
+        }
     }
 
     fun getExams() {
@@ -79,7 +106,8 @@ class ExamViewModel @Inject constructor(
             examRepository.addExam(exam).collect {
                 if (it is NetworkResult.Success) {
                     it.body?.let { exam ->
-                        addAdminToExam(exam.id!!, user.id)
+                        getLoggedInUser()
+                        loggedInUser.id?.let { it1 -> addAdminToExam(exam.id!!, it1) }
                     }
                 }
             }

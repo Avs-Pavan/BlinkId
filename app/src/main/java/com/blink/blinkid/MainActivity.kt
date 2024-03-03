@@ -34,6 +34,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.ui.AddExamScreen
+import com.blink.blinkid.ui.AddStudentScreen
 import com.blink.blinkid.ui.ExamDetailsScreen
 import com.blink.blinkid.ui.theme.BlinkIdTheme
 import com.blink.blinkid.ui.ExamListScreen
@@ -74,7 +75,7 @@ fun MyApp() {
             LoginScreen(navController, loginViewModel)
         }
         composable(Navigation.Routes.HOME) {
-            HomeScreen(navController)
+            HomeScreen(navController, loginViewModel)
         }
         composable(Navigation.Routes.EXAMS) {
             ExamListScreen(navController, examViewModel)
@@ -82,11 +83,14 @@ fun MyApp() {
         composable(Navigation.Routes.ADD_EXAM) {
             AddExamScreen(navController, examViewModel)
         }
-        composable(Navigation.Routes.EXAM_DETAIL+"/{examId}") {
+        composable(Navigation.Routes.EXAM_DETAIL + "/{examId}") {
             ExamDetailsScreen(navController, examViewModel)
         }
         composable(Navigation.Routes.STUDENT_LIST) {
             StudentListScreen(navController, examViewModel)
+        }
+        composable(Navigation.Routes.ADD_STUDENT) {
+            AddStudentScreen(navController, examViewModel)
         }
     }
 }
@@ -105,6 +109,7 @@ object Navigation {
         const val EXAM_DETAIL = "examDetail"
         const val ADD_EXAM = "add_exam"
         const val STUDENT_LIST = "student_list"
+        const val ADD_STUDENT = "add_student"
     }
 
 }
@@ -213,7 +218,7 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {
 
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -256,13 +261,28 @@ fun HomeScreen(navController: NavController) {
 
         Button(
             onClick = {
-                navController.navigate(Navigation.Routes.ADD_EXAM)
+                navController.navigate(Navigation.Routes.ADD_STUDENT)
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
             Text(text = "Add student")
+        }
+
+        Button(
+            onClick = {
+                loginViewModel.logout()
+                navController.navigate(Navigation.Routes.LOGIN) {
+                    launchSingleTop = true
+                    restoreState = false
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Text(text = "Logout")
         }
     }
 }

@@ -95,9 +95,19 @@ fun ExamListScreen(
             if (isLoading) {
                 ProgressBar()
             } else {
-                ExamList(examList) {
-                    examViewModel.setSelectedExam(it)
-                    navController.navigate(Navigation.Routes.EXAM_DETAIL + "/${it.id}")
+                if (examList.isEmpty()) {
+                    Text(
+                        text = "No exams available",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                } else {
+                    ExamList(examList) {
+                        examViewModel.setSelectedExam(it)
+                        navController.navigate(Navigation.Routes.EXAM_DETAIL + "/${it.id}")
+                    }
                 }
             }
         }
