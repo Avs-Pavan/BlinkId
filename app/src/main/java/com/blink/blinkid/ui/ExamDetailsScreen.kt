@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -41,6 +43,7 @@ import com.blink.blinkid.model.Exam
 import com.blink.blinkid.model.User
 import com.blink.blinkid.ui.theme.Purple40
 import com.blink.blinkid.viewmodel.ExamViewModel
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator.popBackStack
 import retrofit2.http.Header
 
 
@@ -91,7 +94,6 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
                 .padding(16.dp)
         ) {
 
-
             Column(modifier = Modifier.fillMaxSize()) {
 
                 exam?.let {
@@ -140,6 +142,16 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
             CircularButton(modifier = Modifier.align(Alignment.BottomEnd)) {
                 sheetVisible = true
             }
+            CircularButton(
+                modifier = Modifier.align(Alignment.BottomStart),
+                icon = Icons.Default.Delete,
+                backgroundColor = Color.Red
+            ) {
+                exam?.id?.let { examId ->
+                    viewModel.deleteExam(examId)
+                    navController.popBackStack()
+                }
+            }
 
             if (sheetVisible) {
                 ModalBottomSheet(onDismissRequest = { sheetVisible = false }) {
@@ -175,22 +187,26 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
 
 @Composable
 fun CircularButton(
-    modifier: Modifier = Modifier, onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    icon: ImageVector = Icons.Default.Add,
+    backgroundColor: Color = MaterialTheme.colorScheme.primary,
+    foregroundColor: Color = Color.White,
+    onClick: () -> Unit,
 ) {
     Box(
         modifier = modifier
             .size(60.dp)
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.primary)
+            .background(backgroundColor)
             .clickable {
                 onClick()
             }
             .padding(10.dp)
     ) {
         Icon(
-            imageVector = Icons.Default.Add,
+            imageVector = icon,
             contentDescription = "Favorite Icon",
-            tint = Color.White,
+            tint = foregroundColor,
             modifier = Modifier.align(Alignment.Center)
         )
     }

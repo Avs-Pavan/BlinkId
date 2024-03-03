@@ -82,19 +82,23 @@ fun ExamListScreen(
         }
     }
 
+    Column {
+        HeaderText("Exams")
 
-    Box(
-        modifier = Modifier
-            .padding(10.dp)
-            .background(Color(0xFFF8F8F8))
-    ) {
 
-        if (isLoading) {
-            ProgressBar()
-        } else {
-            ExamList(examList) {
-                examViewModel.setSelectedExam(it)
-                navController.navigate(Navigation.Routes.EXAM_DETAIL + "/${it.id}")
+        Box(
+            modifier = Modifier
+                .padding(10.dp)
+                .background(Color(0xFFF8F8F8))
+        ) {
+
+            if (isLoading) {
+                ProgressBar()
+            } else {
+                ExamList(examList) {
+                    examViewModel.setSelectedExam(it)
+                    navController.navigate(Navigation.Routes.EXAM_DETAIL + "/${it.id}")
+                }
             }
         }
     }
@@ -102,11 +106,14 @@ fun ExamListScreen(
 }
 
 
-
 @Composable
 fun ExamList(exams: List<Exam>, onUserClick: (Exam) -> Unit) {
     Log.e("ExamList", "ExamList: $exams")
-    Column (modifier = Modifier.fillMaxSize().padding(5.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(5.dp)
+    ) {
         exams.forEach { exam ->
             ExamCard(exam, onUserClick)
         }
