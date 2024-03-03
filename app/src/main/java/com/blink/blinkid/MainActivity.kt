@@ -34,6 +34,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.ui.theme.BlinkIdTheme
+import com.blink.blinkid.ui.theme.ExamListScreen
 import com.blink.blinkid.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -70,6 +71,12 @@ fun MyApp() {
         composable(Navigation.Routes.HOME) {
             HomeScreen(navController)
         }
+        composable(Navigation.Routes.EXAMS) {
+            ExamListScreen(navController)
+        }
+        composable(Navigation.Routes.ADD_EXAM) {
+            AddExamScreen(navController)
+        }
     }
 }
 
@@ -83,6 +90,8 @@ object Navigation {
     object Routes {
         const val HOME = "home"
         const val LOGIN = "login"
+        const val EXAMS = "exams"
+        const val ADD_EXAM = "add_exam"
     }
 
 }
@@ -192,5 +201,33 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {
 
 @Composable
 fun HomeScreen(navController: NavController) {
-    // Your home screen UI
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Button(
+            onClick = {
+                navController.navigate(Navigation.Routes.EXAMS)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Text(text = "Exams")
+        }
+
+        Button(
+            onClick = {
+                navController.navigate(Navigation.Routes.ADD_EXAM)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Text(text = "Add exam")
+        }
+    }
 }

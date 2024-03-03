@@ -6,7 +6,9 @@ import com.blink.blinkid.User
 import com.blink.blinkid.commons.LocalDataStore
 import com.blink.blinkid.model.Constants
 import com.blink.blinkid.model.network.ApiService
+import com.blink.blinkid.repo.ExamRepository
 import com.blink.blinkid.repo.LoginRepository
+import com.blink.blinkid.repo.UserRepository
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -51,6 +53,18 @@ object AppModule {
     @Singleton
     fun provideLoginRepository(apiService: ApiService): LoginRepository {
         return LoginRepository(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideExamRepository(apiService: ApiService): ExamRepository {
+        return ExamRepository(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(apiService: ApiService): UserRepository {
+        return UserRepository(apiService)
     }
 
 

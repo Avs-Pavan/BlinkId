@@ -34,3 +34,15 @@ data class Image(
     val id: Int,
     val url: String
 )
+
+data class Exam(
+    val admins: List<User> = emptyList(),
+    val description: String,
+    val examDate: String,
+    val examDuration: String,
+    val examLocation: String,
+    val examTime: String,
+    val id: Int,
+    val name: String,
+    val users: List<User> = emptyList()
+)
