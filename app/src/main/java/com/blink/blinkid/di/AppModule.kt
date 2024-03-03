@@ -2,7 +2,7 @@ package com.blink.blinkid.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.blink.blinkid.User
+import com.blink.blinkid.model.User
 import com.blink.blinkid.commons.LocalDataStore
 import com.blink.blinkid.model.Constants
 import com.blink.blinkid.model.network.ApiService

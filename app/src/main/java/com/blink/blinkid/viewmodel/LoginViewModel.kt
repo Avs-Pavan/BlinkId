@@ -2,8 +2,8 @@ package com.blink.blinkid.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.blink.blinkid.LoginRequest
-import com.blink.blinkid.LoginResponse
+import com.blink.blinkid.model.LoginRequest
+import com.blink.blinkid.model.LoginResponse
 import com.blink.blinkid.commons.LocalDataStore
 import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.model.Constants

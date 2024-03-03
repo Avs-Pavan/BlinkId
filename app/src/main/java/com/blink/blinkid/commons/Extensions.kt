@@ -3,7 +3,7 @@ package com.blink.blinkid.commons
 import android.app.Activity
 import android.view.View
 import android.widget.Toast
-import com.blink.blinkid.ErrorResponse
+import com.blink.blinkid.model.ErrorResponse
 import com.google.gson.Gson
 import okhttp3.ResponseBody
 

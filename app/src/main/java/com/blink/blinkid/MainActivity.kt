@@ -33,8 +33,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.blink.blinkid.commons.NetworkResult
+import com.blink.blinkid.ui.AddExamScreen
+import com.blink.blinkid.ui.ExamDetailsScreen
 import com.blink.blinkid.ui.theme.BlinkIdTheme
-import com.blink.blinkid.ui.theme.ExamListScreen
+import com.blink.blinkid.ui.ExamListScreen
 import com.blink.blinkid.viewmodel.ExamViewModel
 import com.blink.blinkid.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,10 +76,13 @@ fun MyApp() {
             HomeScreen(navController)
         }
         composable(Navigation.Routes.EXAMS) {
-            ExamListScreen(navController,examViewModel)
+            ExamListScreen(navController, examViewModel)
         }
         composable(Navigation.Routes.ADD_EXAM) {
-            AddExamScreen(navController,examViewModel)
+            AddExamScreen(navController, examViewModel)
+        }
+        composable(Navigation.Routes.EXAM_DETAIL+"/{examId}") {
+            ExamDetailsScreen(navController, examViewModel)
         }
     }
 }
@@ -93,7 +98,7 @@ object Navigation {
         const val HOME = "home"
         const val LOGIN = "login"
         const val EXAMS = "exams"
-        const val EXAM_DETAIL = "examDetail/{examId}"
+        const val EXAM_DETAIL = "examDetail"
         const val ADD_EXAM = "add_exam"
     }
 

@@ -1,4 +1,4 @@
-package com.blink.blinkid
+package com.blink.blinkid.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -19,13 +18,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.blink.blinkid.model.Exam
 import com.blink.blinkid.commons.NetworkResult
-import com.blink.blinkid.ui.theme.ProgressBar
 import com.blink.blinkid.viewmodel.ExamViewModel
 
 
@@ -34,8 +32,6 @@ fun AddExamScreen(
     navController: NavController,
     viewModel: ExamViewModel
 ) {
-
-
     val context = LocalContext.current
     var toastMessage by remember { mutableStateOf("") }
 

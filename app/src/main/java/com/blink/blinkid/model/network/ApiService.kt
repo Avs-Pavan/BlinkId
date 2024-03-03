@@ -1,9 +1,9 @@
 package com.blink.blinkid.model.network
 
-import com.blink.blinkid.Exam
-import com.blink.blinkid.LoginRequest
-import com.blink.blinkid.LoginResponse
-import com.blink.blinkid.User
+import com.blink.blinkid.model.Exam
+import com.blink.blinkid.model.LoginRequest
+import com.blink.blinkid.model.LoginResponse
+import com.blink.blinkid.model.User
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -32,39 +32,40 @@ interface ApiService {
     suspend fun getExams(): Response<List<Exam>>
 
     @GET("exams/{examId}")
-    suspend fun getExam(@Path("examId") examId: String): Response<Exam>
-
-
+    suspend fun getExam(@Path("examId") examId: Int): Response<Exam>
 
     @PUT("exams/{examId}")
     suspend fun updateExam(
-        @Path("examId") examId: String,
+        @Path("examId") examId: Int,
         @Body exam: Exam
     ): Response<Exam>
 
     @POST("exams/{examId}/users/{userId}")
     suspend fun addExamStudent(
-        @Path("examId") examId: String,
-        @Path("userId") userId: String
+        @Path("examId") examId: Int,
+        @Path("userId") userId: Int
     ): Response<Exam>
 
     @POST("exams/{examId}/admins/{userId}")
     suspend fun addExamAdmin(
-        @Path("examId") examId: String,
-        @Path("userId") userId: String
+        @Path("examId") examId: Int,
+        @Path("userId") userId: Int
     ): Response<Exam>
 
     @DELETE("exams/{examId}/users/{userId}")
-    suspend fun deleteExam(
-        @Path("examId") examId: String,
-        @Path("userId") userId: String
+    suspend fun deleteExamStudent(
+        @Path("examId") examId: Int,
+        @Path("userId") userId: Int
     ): Response<Exam>
 
     @DELETE("exams/{examId}/admins/{userId}")
     suspend fun deleteExamAdmin(
-        @Path("examId") examId: String,
-        @Path("userId") userId: String
+        @Path("examId") examId: Int,
+        @Path("userId") userId: Int
     ): Response<Exam>
+
+    @DELETE("exams/{examId}")
+    suspend fun deleteExam(@Path("examId") examId: Int): Response<Exam>
 
 
 }

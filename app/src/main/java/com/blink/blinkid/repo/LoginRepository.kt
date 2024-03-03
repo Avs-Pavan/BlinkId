@@ -1,7 +1,7 @@
 package com.blink.blinkid.repo
 
-import com.blink.blinkid.LoginRequest
-import com.blink.blinkid.LoginResponse
+import com.blink.blinkid.model.LoginRequest
+import com.blink.blinkid.model.LoginResponse
 import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.commons.toErrorMessage
 import com.blink.blinkid.model.network.ApiService

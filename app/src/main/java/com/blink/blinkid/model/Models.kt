@@ -1,4 +1,4 @@
-package com.blink.blinkid
+package com.blink.blinkid.model
 
 data class ErrorResponse(
     val description: String,

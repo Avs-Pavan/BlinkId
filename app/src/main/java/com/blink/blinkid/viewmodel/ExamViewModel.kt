@@ -1,18 +1,14 @@
 package com.blink.blinkid.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.blink.blinkid.Exam
-import com.blink.blinkid.LoginRequest
-import com.blink.blinkid.LoginResponse
-import com.blink.blinkid.User
-import com.blink.blinkid.commons.LocalDataStore
+import com.blink.blinkid.model.Exam
+import com.blink.blinkid.model.User
 import com.blink.blinkid.commons.NetworkResult
-import com.blink.blinkid.model.Constants
 import com.blink.blinkid.repo.ExamRepository
 import com.blink.blinkid.repo.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,8 +19,14 @@ import javax.inject.Inject
 class ExamViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val examRepository: ExamRepository,
+    private val user: User
 ) : ViewModel() {
 
+    private val _selectedExam = MutableStateFlow<Exam?>(null)
+    val selectedExam: StateFlow<Exam?> = _selectedExam.asStateFlow()
+
+    private val _selectedUser = MutableStateFlow<User?>(null)
+    val selectedUser: StateFlow<User?> = _selectedUser.asStateFlow()
 
     private val _exams = MutableStateFlow<NetworkResult<List<Exam>>>(NetworkResult.Initial)
     val exams: StateFlow<NetworkResult<List<Exam>>> = _exams.asStateFlow()
@@ -75,12 +77,16 @@ class ExamViewModel @Inject constructor(
         viewModelScope.launch {
             _exam.value = NetworkResult.Loading
             examRepository.addExam(exam).collect {
-                _exam.value = it
+                if (it is NetworkResult.Success) {
+                    it.body?.let { exam ->
+                        addAdminToExam(exam.id!!, user.id)
+                    }
+                }
             }
         }
     }
 
-    fun updateExam(examId: String, exam: Exam) {
+    fun updateExam(examId: Int, exam: Exam) {
         viewModelScope.launch {
             _exam.value = NetworkResult.Loading
             examRepository.updateExam(examId, exam).collect {
@@ -89,16 +95,17 @@ class ExamViewModel @Inject constructor(
         }
     }
 
-    fun addStudentToExam(examId: String, userId: String) {
+    fun addStudentToExam(examId: Int, userId: Int) {
         viewModelScope.launch {
             _exam.value = NetworkResult.Loading
             examRepository.addStudentToExam(examId, userId).collect {
                 _exam.value = it
+                _selectedExam.value = (it as NetworkResult.Success).body
             }
         }
     }
 
-    fun addAdminToExam(examId: String, userId: String) {
+    private fun addAdminToExam(examId: Int, userId: Int) {
         viewModelScope.launch {
             _exam.value = NetworkResult.Loading
             examRepository.addAdminToExam(examId, userId).collect {
@@ -107,16 +114,16 @@ class ExamViewModel @Inject constructor(
         }
     }
 
-    fun deleteExam(examId: String, userId: String) {
+    fun deleteExam(examId: Int) {
         viewModelScope.launch {
             _exam.value = NetworkResult.Loading
-            examRepository.deleteExam(examId, userId).collect {
+            examRepository.deleteExam(examId).collect {
                 _exam.value = it
             }
         }
     }
 
-    fun deleteAdminFromExam(examId: String, userId: String) {
+    fun deleteAdminFromExam(examId: Int, userId: Int) {
         viewModelScope.launch {
             _exam.value = NetworkResult.Loading
             examRepository.deleteAdminFromExam(examId, userId).collect {
@@ -125,23 +132,28 @@ class ExamViewModel @Inject constructor(
         }
     }
 
-    fun deleteStudentFromExam(examId: String, userId: String) {
+    fun deleteStudentFromExam(examId: Int, userId: Int) {
         viewModelScope.launch {
             _exam.value = NetworkResult.Loading
             examRepository.deleteStudentFromExam(examId, userId).collect {
                 _exam.value = it
+                _selectedExam.value = (it as NetworkResult.Success).body
             }
         }
     }
 
 
-    fun getExam(examId: String) {
+    fun getExam(examId: Int) {
         viewModelScope.launch {
             _exam.value = NetworkResult.Loading
             examRepository.getExam(examId).collect {
                 _exam.value = it
             }
         }
+    }
+
+    fun setSelectedExam(exam: Exam) {
+        _selectedExam.value = exam
     }
 
 
