@@ -37,6 +37,7 @@ import com.blink.blinkid.ui.AddExamScreen
 import com.blink.blinkid.ui.ExamDetailsScreen
 import com.blink.blinkid.ui.theme.BlinkIdTheme
 import com.blink.blinkid.ui.ExamListScreen
+import com.blink.blinkid.ui.StudentListScreen
 import com.blink.blinkid.viewmodel.ExamViewModel
 import com.blink.blinkid.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -84,6 +85,9 @@ fun MyApp() {
         composable(Navigation.Routes.EXAM_DETAIL+"/{examId}") {
             ExamDetailsScreen(navController, examViewModel)
         }
+        composable(Navigation.Routes.STUDENT_LIST) {
+            StudentListScreen(navController, examViewModel)
+        }
     }
 }
 
@@ -100,6 +104,7 @@ object Navigation {
         const val EXAMS = "exams"
         const val EXAM_DETAIL = "examDetail"
         const val ADD_EXAM = "add_exam"
+        const val STUDENT_LIST = "student_list"
     }
 
 }
@@ -236,6 +241,28 @@ fun HomeScreen(navController: NavController) {
                 .padding(8.dp)
         ) {
             Text(text = "Add exam")
+        }
+
+        Button(
+            onClick = {
+                navController.navigate(Navigation.Routes.STUDENT_LIST)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Text(text = "Student list")
+        }
+
+        Button(
+            onClick = {
+                navController.navigate(Navigation.Routes.ADD_EXAM)
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Text(text = "Add student")
         }
     }
 }
