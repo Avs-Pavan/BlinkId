@@ -12,7 +12,7 @@ class UserRepository @Inject constructor(private val apiService: ApiService) {
 
     suspend fun getStudents(): Flow<NetworkResult<List<User>>> = flow {
         try {
-            val response = apiService.getUsers()
+            val response = apiService.getStudents()
             if (response.isSuccessful) {
                 response.body()?.let {
                     emit(NetworkResult.Success(it))

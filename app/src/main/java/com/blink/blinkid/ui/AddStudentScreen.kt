@@ -57,7 +57,7 @@ import java.util.Objects
 @Composable
 fun AddStudentScreen(
     navController: NavController,
-    viewModel: ExamViewModel,
+    viewModel: ExamViewModel = hiltViewModel(),
     imageViewModel: ImageViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -86,7 +86,7 @@ fun AddStudentScreen(
     LaunchedEffect(response) {
         when (response) {
             is NetworkResult.Success -> {
-                toastMessage = "User added successfully"
+                toastMessage = "Student added successfully"
                 navController.popBackStack()
             }
 
@@ -205,6 +205,12 @@ fun AddStudentScreen(
 
             Button(
                 onClick = {
+
+                    if (mail.isEmpty() || userName.isEmpty() || password.isEmpty() || imageResponse.isEmpty()) {
+                        toastMessage = "All fields are required, Image also required"
+                        return@Button
+                    }
+
                     viewModel.addStudent(
                         AddStudentRequest(
                             email = mail,

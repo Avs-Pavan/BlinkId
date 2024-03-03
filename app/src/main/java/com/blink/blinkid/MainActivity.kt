@@ -83,7 +83,7 @@ fun MyApp() {
             ExamListScreen(navController, examViewModel)
         }
         composable(Navigation.Routes.ADD_EXAM) {
-            AddExamScreen(navController, examViewModel)
+            AddExamScreen(navController)
         }
         composable(Navigation.Routes.EXAM_DETAIL + "/{examId}") {
             ExamDetailsScreen(navController, examViewModel)
@@ -92,7 +92,7 @@ fun MyApp() {
             StudentListScreen(navController, examViewModel)
         }
         composable(Navigation.Routes.ADD_STUDENT) {
-            AddStudentScreen(navController, examViewModel)
+            AddStudentScreen(navController)
         }
         composable(Navigation.Routes.STUDENT_DASHBOARD) {
             StudentDashBoard(navController, loginViewModel = hiltViewModel())

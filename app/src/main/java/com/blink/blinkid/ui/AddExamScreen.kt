@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.blink.blinkid.model.Exam
 import com.blink.blinkid.commons.NetworkResult
@@ -30,7 +31,7 @@ import com.blink.blinkid.viewmodel.ExamViewModel
 @Composable
 fun AddExamScreen(
     navController: NavController,
-    viewModel: ExamViewModel
+    viewModel: ExamViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     var toastMessage by remember { mutableStateOf("") }
