@@ -101,7 +101,9 @@ fun ExamListScreen(
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.Center)
                     )
                 } else {
                     ExamList(examList) {

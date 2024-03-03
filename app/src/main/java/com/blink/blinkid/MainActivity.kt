@@ -1,6 +1,7 @@
 package com.blink.blinkid
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -38,7 +39,9 @@ import com.blink.blinkid.ui.AddStudentScreen
 import com.blink.blinkid.ui.ExamDetailsScreen
 import com.blink.blinkid.ui.theme.BlinkIdTheme
 import com.blink.blinkid.ui.ExamListScreen
+import com.blink.blinkid.ui.HeaderText
 import com.blink.blinkid.ui.StudentListScreen
+import com.blink.blinkid.ui.student.StudentDashBoard
 import com.blink.blinkid.viewmodel.ExamViewModel
 import com.blink.blinkid.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,18 +67,17 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyApp() {
     val navController = rememberNavController()
-    val loginViewModel: LoginViewModel = hiltViewModel()
     val examViewModel: ExamViewModel = hiltViewModel()
 
     NavHost(
         navController = navController,
-        startDestination = if (loginViewModel.isLoggedIn()) Navigation.Routes.HOME else Navigation.Routes.LOGIN
+        startDestination = Navigation.Routes.LOGIN
     ) {
         composable(Navigation.Routes.LOGIN) {
-            LoginScreen(navController, loginViewModel)
+            LoginScreen(navController, loginViewModel = hiltViewModel())
         }
         composable(Navigation.Routes.HOME) {
-            HomeScreen(navController, loginViewModel)
+            HomeScreen(navController, loginViewModel = hiltViewModel())
         }
         composable(Navigation.Routes.EXAMS) {
             ExamListScreen(navController, examViewModel)
@@ -91,6 +93,9 @@ fun MyApp() {
         }
         composable(Navigation.Routes.ADD_STUDENT) {
             AddStudentScreen(navController, examViewModel)
+        }
+        composable(Navigation.Routes.STUDENT_DASHBOARD) {
+            StudentDashBoard(navController, loginViewModel = hiltViewModel())
         }
     }
 }
@@ -110,6 +115,7 @@ object Navigation {
         const val ADD_EXAM = "add_exam"
         const val STUDENT_LIST = "student_list"
         const val ADD_STUDENT = "add_student"
+        const val STUDENT_DASHBOARD = "student_dashboard"
     }
 
 }
@@ -119,6 +125,13 @@ object Navigation {
 fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {
 
     val context = LocalContext.current
+
+    if (loginViewModel.isLoggedIn()) {
+        if (loginViewModel.isTeacher())
+            navController.navigate(Navigation.Routes.HOME)
+        else
+            navController.navigate(Navigation.Routes.STUDENT_DASHBOARD)
+    }
 
     var toastMessage by remember { mutableStateOf("") }
 
@@ -139,7 +152,10 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {
 
             is NetworkResult.Success -> {
                 toastMessage = "Login successful"
-                navController.navigate(Navigation.Routes.HOME)
+                if (loginViewModel.isTeacher())
+                    navController.navigate(Navigation.Routes.HOME)
+                else
+                    navController.navigate(Navigation.Routes.STUDENT_DASHBOARD)
             }
 
             is NetworkResult.Error -> {
@@ -219,70 +235,81 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {
 
 @Composable
 fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Button(
-            onClick = {
-                navController.navigate(Navigation.Routes.EXAMS)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            Text(text = "Exams")
-        }
 
-        Button(
-            onClick = {
-                navController.navigate(Navigation.Routes.ADD_EXAM)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            Text(text = "Add exam")
+    LaunchedEffect(true) {
+        if (!loginViewModel.isLoggedIn()) {
+            navController.navigate(Navigation.Routes.LOGIN)
         }
+        Log.e("HomeScreen", "HomeScreen: ${loginViewModel.getUser()}")
+    }
+    Column {
+        HeaderText(text = "Welcome ${loginViewModel.getUser()?.username ?: ""}")
 
-        Button(
-            onClick = {
-                navController.navigate(Navigation.Routes.STUDENT_LIST)
-            },
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "Student list")
-        }
+            Button(
+                onClick = {
+                    navController.navigate(Navigation.Routes.EXAMS)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(text = "Exams")
+            }
 
-        Button(
-            onClick = {
-                navController.navigate(Navigation.Routes.ADD_STUDENT)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            Text(text = "Add student")
-        }
+            Button(
+                onClick = {
+                    navController.navigate(Navigation.Routes.ADD_EXAM)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(text = "Add exam")
+            }
 
-        Button(
-            onClick = {
-                loginViewModel.logout()
-                navController.navigate(Navigation.Routes.LOGIN) {
-                    launchSingleTop = true
-                    restoreState = false
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            Text(text = "Logout")
+            Button(
+                onClick = {
+                    navController.navigate(Navigation.Routes.STUDENT_LIST)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(text = "Student list")
+            }
+
+            Button(
+                onClick = {
+                    navController.navigate(Navigation.Routes.ADD_STUDENT)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(text = "Add student")
+            }
+
+            Button(
+                onClick = {
+                    loginViewModel.logout()
+                    navController.navigate(Navigation.Routes.LOGIN) {
+                        launchSingleTop = true
+                        restoreState = false
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                Text(text = "Logout")
+            }
         }
     }
 }

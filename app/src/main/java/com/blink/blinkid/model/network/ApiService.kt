@@ -74,5 +74,7 @@ interface ApiService {
     @DELETE("exams/{examId}")
     suspend fun deleteExam(@Path("examId") examId: Int): Response<Exam>
 
+    @GET("users/{userId}/exams")
+    suspend fun getStudentExams(@Path("userId") userID: Int): Response<List<Exam>>
 
 }

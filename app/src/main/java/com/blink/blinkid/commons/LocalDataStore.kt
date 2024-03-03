@@ -11,6 +11,14 @@ class LocalDataStore(private val sharedPreferences: SharedPreferences, private v
         sharedPreferences.edit().putString(key, value).apply()
     }
 
+    fun saveInt(key: String, value: Int) {
+        sharedPreferences.edit().putString(key, value.toString()).apply()
+    }
+
+    fun getInt(key: String, defaultValue: Int): Int {
+        return sharedPreferences.getString(key, defaultValue.toString())?.toInt() ?: defaultValue
+    }
+
     fun getString(key: String, defaultValue: String?): String? {
         return sharedPreferences.getString(key, defaultValue)
     }
