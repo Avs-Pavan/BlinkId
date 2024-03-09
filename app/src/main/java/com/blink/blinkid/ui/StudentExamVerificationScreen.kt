@@ -166,11 +166,11 @@ fun StudentExamVerificationScreen(
                 ProgressBar()
             }
 
-            exam?.let { exam ->
-                if (exam.examValidations.any { it.studentId == student?.id }) {
+            exam?.examValidations?.let { validations ->
+                if (validations.any { it.studentId == student?.id }) {
                     LazyColumn{
-                        items(exam.examValidations.filter { it.studentId == student?.id }.size) { validation ->
-                            UserValidationRow(studentExamValidations = exam.examValidations.filter { it.studentId == student?.id }[validation])
+                        items(validations.filter { it.studentId == student?.id }.size) { validation ->
+                            UserValidationRow(studentExamValidations = validations.filter { it.studentId == student?.id }[validation])
                             Spacer(modifier = Modifier.height(5.dp))
                         }
                     }

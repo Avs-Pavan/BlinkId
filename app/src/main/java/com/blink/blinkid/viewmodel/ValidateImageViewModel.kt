@@ -88,16 +88,16 @@ class ValidateImageViewModel @Inject constructor(
                                         is NetworkResult.Error -> {
                                             _result.value = NetworkResult.Initial
                                             _error.value = res.errorMessage
-                                            examRepository.addStudentExamValidation(
-                                                StudentExamValidations(
-                                                    examId = examId,
-                                                    studentId = studentId,
-                                                    status = false,
-                                                    image = image
-                                                )
-                                            ).collect {
-                                                _result.value = it
-                                            }
+//                                            examRepository.addStudentExamValidation(
+//                                                StudentExamValidations(
+//                                                    examId = examId,
+//                                                    studentId = studentId,
+//                                                    status = false,
+//                                                    image = image
+//                                                )
+//                                            ).collect {
+//                                                _result.value = it
+//                                            }
                                         }
 
                                         else -> {}
