@@ -8,6 +8,7 @@ import com.blink.blinkid.model.User
 import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.model.AddStudentRequest
 import com.blink.blinkid.model.Constants
+import com.blink.blinkid.model.StudentExamValidations
 import com.blink.blinkid.repo.ExamRepository
 import com.blink.blinkid.repo.UserRepository
 import com.google.gson.reflect.TypeToken
@@ -74,7 +75,6 @@ class ExamViewModel @Inject constructor(
 
     fun getExams() {
         viewModelScope.launch {
-
             _exams.value = NetworkResult.Loading
             examRepository.getExams().collect {
                 _exams.value = it
@@ -180,8 +180,41 @@ class ExamViewModel @Inject constructor(
         }
     }
 
+    private fun getExamValidations(examId: Int) {
+        viewModelScope.launch {
+            examRepository.getStudentExamValidations(examId.toLong()).collect {
+                if (it is NetworkResult.Success) {
+                    _selectedExam.value?.examValidations = it.body!!
+                }
+            }
+        }
+    }
+
+//    fun getExamValidationsByStudent(examId: Int, studentId: Int) {
+//        viewModelScope.launch {
+//            _exam.value = NetworkResult.Loading
+//            examRepository.getStudentExamValidation(examId.toLong(), studentId.toLong()).collect {
+//                _examStudentValidation.value = it
+//            }
+//        }
+//    }
+//
+//    fun addExamValidation(examValidation: StudentExamValidations) {
+//        viewModelScope.launch {
+//            _exam.value = NetworkResult.Loading
+//            examRepository.addStudentExamValidation(examValidation).collect {
+//                _selectedExam.value?.examValidations =
+//            }
+//        }
+//    }
+
     fun setSelectedExam(exam: Exam) {
         _selectedExam.value = exam
+        exam.id?.let { getExamValidations(it) }
+    }
+
+    fun setSelectedUser(user: User) {
+        _selectedUser.value = user
     }
 
 

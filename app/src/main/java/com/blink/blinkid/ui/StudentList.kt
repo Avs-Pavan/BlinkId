@@ -135,12 +135,15 @@ fun UserCard(user: User, onUserClick: (User) -> Unit) {
 }
 
 @Composable
-fun UserCardWithDelete(user: User, deleteUser: (Int) -> Unit) {
+fun UserCardWithDelete(user: User, deleteUser: (Int) -> Unit, onUserClick: (User) -> Unit){
 
     Row(modifier = Modifier
         .background(Color.White, RoundedCornerShape(15.dp))
         .graphicsLayer(shadowElevation = 2.0f)
         .padding(12.dp)
+        .clickable {
+            onUserClick(user)
+        }
     ) {
         if (user.images.isNotEmpty())
             AsyncImage(

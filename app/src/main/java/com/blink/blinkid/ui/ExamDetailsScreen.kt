@@ -1,5 +1,6 @@
 package com.blink.blinkid.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.blink.blinkid.Navigation
 import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.model.Exam
 import com.blink.blinkid.model.User
@@ -56,6 +58,8 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
     var students by remember { mutableStateOf<List<User>>(emptyList()) }
 
     var isLoading by remember { mutableStateOf(false) }
+
+//    val examValidationsResult by viewModel.examValidations.collectAsState()
 
 
     val studentsRes by viewModel.students.collectAsState()
@@ -113,7 +117,6 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
                 )
 
                 StudentList(false, exam?.admins ?: emptyList()) {
-
                 }
 
                 Spacer(modifier = Modifier.padding(5.dp))
@@ -129,9 +132,14 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
                 LazyColumn {
                     exam?.users?.let { list ->
                         items(list.size) { student ->
-                            UserCardWithDelete(list[student]) { userId ->
+                            UserCardWithDelete(list[student], { userId ->
                                 viewModel.deleteStudentFromExam(exam?.id!!, userId)
-                            }
+                            },
+                                {
+                                    viewModel.setSelectedUser(user = it)
+                                    Log.d("ExamDetailsScreen", "ExamDetailsScreen: ${it.username}")
+                                    navController.navigate(Navigation.Routes.STUDENT_EXAM_VERIFICATION)
+                                })
                         }
                     }
                 }

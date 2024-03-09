@@ -2,6 +2,7 @@ package com.blink.blinkid.di
 
 import com.blink.blinkid.model.Constants.BASE_URL
 import com.blink.blinkid.model.network.ApiService
+import com.blink.blinkid.model.network.MlApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,6 +11,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 
@@ -43,10 +45,28 @@ object NetworkModule {
             .build()
     }
 
+    @MlRetrofit
+    @Singleton
+    @Provides
+    fun provideRetrofitMl(client: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("http://3.135.199.156/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+    }
+
     @Singleton
     @Provides
     fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
+    }
+
+
+    @Singleton
+    @Provides
+    fun provideApiServiceMl(@MlRetrofit retrofit: Retrofit): MlApiService {
+        return retrofit.create(MlApiService::class.java)
     }
 
 }

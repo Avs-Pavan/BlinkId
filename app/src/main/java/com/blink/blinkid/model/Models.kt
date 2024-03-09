@@ -44,7 +44,8 @@ data class Exam(
     val examTime: String,
     val id: Int? = null,
     val name: String,
-    val users: List<User> = emptyList()
+    val users: List<User> = emptyList(),
+    var examValidations: List<StudentExamValidations> = emptyList()
 )
 
 data class AddStudentRequest(
@@ -52,4 +53,22 @@ data class AddStudentRequest(
     val password: String,
     val username: String,
     val image: String
+)
+
+data class StudentExamValidations(
+    val examId: Int,
+    val id: Int? = null,
+    val image: String,
+    val status: Boolean,
+    val studentId: Int
+)
+
+   data class ValidateStudentRequest(
+    val image_urls: List<String>,
+    val validation_url: String
+)
+
+data class ValidationResponse(
+    val image_url: String,
+    val result: Int
 )

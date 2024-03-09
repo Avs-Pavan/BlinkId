@@ -40,6 +40,9 @@ import com.blink.blinkid.ui.ExamDetailsScreen
 import com.blink.blinkid.ui.theme.BlinkIdTheme
 import com.blink.blinkid.ui.ExamListScreen
 import com.blink.blinkid.ui.HeaderText
+import com.blink.blinkid.ui.HomeScreen
+import com.blink.blinkid.ui.LoginScreen
+import com.blink.blinkid.ui.StudentExamVerificationScreen
 import com.blink.blinkid.ui.StudentListScreen
 import com.blink.blinkid.ui.student.StudentDashBoard
 import com.blink.blinkid.viewmodel.ExamViewModel
@@ -97,6 +100,9 @@ fun MyApp() {
         composable(Navigation.Routes.STUDENT_DASHBOARD) {
             StudentDashBoard(navController, loginViewModel = hiltViewModel())
         }
+        composable(Navigation.Routes.STUDENT_EXAM_VERIFICATION) {
+            StudentExamVerificationScreen(navController, examViewModel)
+        }
     }
 }
 
@@ -116,200 +122,9 @@ object Navigation {
         const val STUDENT_LIST = "student_list"
         const val ADD_STUDENT = "add_student"
         const val STUDENT_DASHBOARD = "student_dashboard"
+        const val STUDENT_EXAM_VERIFICATION = "student_exam_verification"
     }
 
 }
 
 
-@Composable
-fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {
-
-    val context = LocalContext.current
-
-    if (loginViewModel.isLoggedIn()) {
-        if (loginViewModel.isTeacher())
-            navController.navigate(Navigation.Routes.HOME)
-        else
-            navController.navigate(Navigation.Routes.STUDENT_DASHBOARD)
-    }
-
-    var toastMessage by remember { mutableStateOf("") }
-
-    LaunchedEffect(toastMessage) {
-        toastMessage.takeIf { it.isNotEmpty() }?.let { msg ->
-            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-            toastMessage = ""
-        }
-    }
-
-    val loginResponse by loginViewModel.loginResponse.collectAsState(initial = NetworkResult.Initial)
-
-    LaunchedEffect(loginResponse) {
-        when (loginResponse) {
-            is NetworkResult.Initial -> {
-
-            }
-
-            is NetworkResult.Success -> {
-                toastMessage = "Login successful"
-                if (loginViewModel.isTeacher())
-                    navController.navigate(Navigation.Routes.HOME)
-                else
-                    navController.navigate(Navigation.Routes.STUDENT_DASHBOARD)
-            }
-
-            is NetworkResult.Error -> {
-                toastMessage =
-                    "Login failed: ${(loginResponse as NetworkResult.Error).errorMessage}"
-            }
-
-            else -> {
-                toastMessage = "Loading..."
-            }
-        }
-    }
-
-
-    // UI code for login screen
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Login",
-            fontSize = 24.sp,
-            modifier = Modifier.padding(20.dp)
-        )
-        TextField(
-            value = email,
-            onValueChange = {
-                email = it
-            },
-            label = {
-                Text("Email")
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-
-        TextField(
-            value = password,
-            onValueChange = {
-                password = it
-            },
-            label = {
-                Text("Password")
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            visualTransformation = PasswordVisualTransformation()
-        )
-        Button(
-            onClick = {
-                if (email.isEmpty() || password.isEmpty()) {
-                    toastMessage = "Email and password cannot be empty"
-                    return@Button
-                }
-                loginViewModel.login(email, password)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            Text(text = "Login")
-        }
-
-    }
-
-}
-
-
-@Composable
-fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
-
-    LaunchedEffect(true) {
-        if (!loginViewModel.isLoggedIn()) {
-            navController.navigate(Navigation.Routes.LOGIN)
-        }
-        Log.e("HomeScreen", "HomeScreen: ${loginViewModel.getUser()}")
-    }
-    Column {
-        HeaderText(text = "Welcome ${loginViewModel.getUser()?.username ?: ""}")
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Button(
-                onClick = {
-                    navController.navigate(Navigation.Routes.EXAMS)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                Text(text = "Exams")
-            }
-
-            Button(
-                onClick = {
-                    navController.navigate(Navigation.Routes.ADD_EXAM)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                Text(text = "Add exam")
-            }
-
-            Button(
-                onClick = {
-                    navController.navigate(Navigation.Routes.STUDENT_LIST)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                Text(text = "Student list")
-            }
-
-            Button(
-                onClick = {
-                    navController.navigate(Navigation.Routes.ADD_STUDENT)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                Text(text = "Add student")
-            }
-
-            Button(
-                onClick = {
-                    loginViewModel.logout()
-                    navController.navigate(Navigation.Routes.LOGIN) {
-                        launchSingleTop = true
-                        restoreState = false
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)
-            ) {
-                Text(text = "Logout")
-            }
-        }
-    }
-}

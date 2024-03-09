@@ -5,6 +5,7 @@ import com.blink.blinkid.model.Exam
 import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.commons.toErrorMessage
 import com.blink.blinkid.model.AddStudentRequest
+import com.blink.blinkid.model.StudentExamValidations
 import com.blink.blinkid.model.User
 import com.blink.blinkid.model.network.ApiService
 import kotlinx.coroutines.flow.Flow
@@ -229,5 +230,66 @@ class ExamRepository @Inject constructor(private val apiService: ApiService) {
             emit(NetworkResult.Error(e.message ?: "An error occurred"))
         }
     }
+
+    fun getStudentExamValidations(examId: Long): Flow<NetworkResult<List<StudentExamValidations>>> =
+        flow {
+            try {
+                val response = apiService.getStudentExamValidations(examId)
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        emit(NetworkResult.Success(it))
+                    }
+                } else {
+                    emit(
+                        NetworkResult.Error(
+                            response.errorBody()?.toErrorMessage()?.message ?: "An error occurred"
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                emit(NetworkResult.Error(e.message ?: "An error occurred"))
+            }
+        }
+
+
+    suspend fun getStudentExamValidation(examId: Long, userId: Long): Flow<NetworkResult<StudentExamValidations>> = flow {
+        try {
+            val response = apiService.getStudentExamValidation(examId, userId)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    emit(NetworkResult.Success(it))
+                }
+            } else {
+                emit(
+                    NetworkResult.Error(
+                        response.errorBody()?.toErrorMessage()?.message ?: "An error occurred"
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "An error occurred"))
+        }
+    }
+
+    suspend fun addStudentExamValidation(studentExamValidations: StudentExamValidations): Flow<NetworkResult<StudentExamValidations>> = flow {
+        try {
+            val response = apiService.addStudentExamValidation(studentExamValidations)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    emit(NetworkResult.Success(it))
+                }
+            } else {
+                emit(
+                    NetworkResult.Error(
+                        response.errorBody()?.toErrorMessage()?.message ?: "An error occurred"
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "An error occurred"))
+        }
+    }
+
+
 
 }

@@ -4,6 +4,7 @@ import com.blink.blinkid.model.AddStudentRequest
 import com.blink.blinkid.model.Exam
 import com.blink.blinkid.model.LoginRequest
 import com.blink.blinkid.model.LoginResponse
+import com.blink.blinkid.model.StudentExamValidations
 import com.blink.blinkid.model.User
 import retrofit2.Response
 import retrofit2.http.Body
@@ -76,5 +77,25 @@ interface ApiService {
 
     @GET("users/{userId}/exams")
     suspend fun getStudentExams(@Path("userId") userID: Int): Response<List<Exam>>
+
+    @GET("student-exams-validations/{examId}")
+    suspend fun getStudentExamValidations(@Path("examId") examId: Long): Response<List<StudentExamValidations>>
+
+    @GET("student-exams-validations/{examId}/{userId}")
+    suspend fun getStudentExamValidation(
+        @Path("examId") examId: Long,
+        @Path("userId") userId: Long
+    ): Response<StudentExamValidations>
+
+    @POST("student-exams-validations")
+    suspend fun addStudentExamValidation(@Body studentExamValidations: StudentExamValidations): Response<StudentExamValidations>
+
+    @PUT("student-exams-validations/{id}")
+    suspend fun updateStudentExamValidation(
+        @Path("id") id: Long,
+        @Body studentExamValidations: StudentExamValidations
+    ): Response<StudentExamValidations>
+
+
 
 }
