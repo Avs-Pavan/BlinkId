@@ -49,12 +49,12 @@ fun AddGroupScreen(
     LaunchedEffect(response) {
         when (response) {
             is NetworkResult.Success -> {
-                toastMessage = "Exam added successfully"
+                toastMessage = "Group added successfully"
                 navController.popBackStack()
             }
 
             is NetworkResult.Error -> {
-                toastMessage = "Error adding exam"
+                toastMessage = "Error adding Group"
             }
 
             else -> {
@@ -68,7 +68,7 @@ fun AddGroupScreen(
     var description by remember { mutableStateOf("") }
 
     Column {
-        HeaderText(text = "Add Exam")
+        HeaderText(text = "Add Group")
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -114,7 +114,7 @@ fun AddGroupScreen(
                     .fillMaxWidth()
                     .padding(vertical = 16.dp)
             ) {
-                Text(text = "Add Exam")
+                Text(text = "Add Group")
             }
 
             if (response is NetworkResult.Loading) {
