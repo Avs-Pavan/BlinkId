@@ -5,6 +5,7 @@ import com.blink.blinkid.model.Exam
 import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.commons.toErrorMessage
 import com.blink.blinkid.model.AddStudentRequest
+import com.blink.blinkid.model.Group
 import com.blink.blinkid.model.StudentExamValidations
 import com.blink.blinkid.model.User
 import com.blink.blinkid.model.network.ApiService
@@ -73,9 +74,48 @@ class ExamRepository @Inject constructor(private val apiService: ApiService) {
         }
     }
 
+    suspend fun getGroups(): Flow<NetworkResult<List<Group>>> = flow {
+        try {
+            val response = apiService.getGroups()
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    emit(NetworkResult.Success(it))
+                }
+            } else {
+                emit(
+                    NetworkResult.Error(
+                        response.errorBody()?.toErrorMessage()?.message ?: "An error occurred"
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emit(NetworkResult.Error(e.message ?: "An error occurred"))
+        }
+    }
+
     suspend fun addExam(exam: Exam): Flow<NetworkResult<Exam>> = flow {
         try {
             val response = apiService.addExam(exam)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    emit(NetworkResult.Success(it))
+                }
+            } else {
+                emit(
+                    NetworkResult.Error(
+                        response.errorBody()?.toErrorMessage()?.message ?: "An error occurred"
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "An error occurred"))
+        }
+    }
+
+    suspend fun addGroup(exam: Group): Flow<NetworkResult<Group>> = flow {
+        try {
+            val response = apiService.addGroup(exam)
             if (response.isSuccessful) {
                 response.body()?.let {
                     emit(NetworkResult.Success(it))
@@ -112,9 +152,47 @@ class ExamRepository @Inject constructor(private val apiService: ApiService) {
         }
     }
 
+    suspend fun updateGroup(examId: Int, exam: Group): Flow<NetworkResult<Group>> = flow {
+        try {
+            val response = apiService.updateGroup(examId, exam)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    emit(NetworkResult.Success(it))
+                }
+            } else {
+                emit(
+                    NetworkResult.Error(
+                        response.errorBody()?.toErrorMessage()?.message ?: "An error occurred"
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "An error occurred"))
+        }
+    }
+
     suspend fun deleteExam(examId: Int): Flow<NetworkResult<Exam>> = flow {
         try {
             val response = apiService.deleteExam(examId)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    emit(NetworkResult.Success(it))
+                }
+            } else {
+                emit(
+                    NetworkResult.Error(
+                        response.errorBody()?.toErrorMessage()?.message ?: "An error occurred"
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "An error occurred"))
+        }
+    }
+
+    suspend fun deleteGroup(examId: Int): Flow<NetworkResult<Group>> = flow {
+        try {
+            val response = apiService.deleteGroup(examId)
             if (response.isSuccessful) {
                 response.body()?.let {
                     emit(NetworkResult.Success(it))
@@ -151,9 +229,45 @@ class ExamRepository @Inject constructor(private val apiService: ApiService) {
         }
     }
 
+    suspend fun addStudentToGroup(examId: Int, userId: Int): Flow<NetworkResult<Group>> = flow {
+
+        val response = apiService.addGroupStudent(examId, userId)
+        if (response.isSuccessful) {
+            response.body()?.let {
+                emit(NetworkResult.Success(it))
+            }
+        } else {
+            emit(
+                NetworkResult.Error(
+                    response.errorBody()?.toErrorMessage()?.message ?: "An error occurred"
+                )
+            )
+        }
+
+    }
+
     suspend fun addAdminToExam(examId: Int, userId: Int): Flow<NetworkResult<Exam>> = flow {
         try {
             val response = apiService.addExamAdmin(examId, userId)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    emit(NetworkResult.Success(it))
+                }
+            } else {
+                emit(
+                    NetworkResult.Error(
+                        response.errorBody()?.toErrorMessage()?.message ?: "An error occurred"
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "An error occurred"))
+        }
+    }
+
+    suspend fun addAdminToGroup(examId: Int, userId: Int): Flow<NetworkResult<Group>> = flow {
+        try {
+            val response = apiService.addGroupAdmin(examId, userId)
             if (response.isSuccessful) {
                 response.body()?.let {
                     emit(NetworkResult.Success(it))
@@ -191,6 +305,26 @@ class ExamRepository @Inject constructor(private val apiService: ApiService) {
             }
         }
 
+    suspend fun deleteStudentFromGroup(examId: Int, userId: Int): Flow<NetworkResult<Group>> =
+        flow {
+            try {
+                val response = apiService.deleteGroupStudent(examId, userId)
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        emit(NetworkResult.Success(it))
+                    }
+                } else {
+                    emit(
+                        NetworkResult.Error(
+                            response.errorBody()?.toErrorMessage()?.message ?: "An error occurred"
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                emit(NetworkResult.Error(e.message ?: "An error occurred"))
+            }
+        }
+
 
     suspend fun deleteAdminFromExam(examId: Int, userId: Int): Flow<NetworkResult<Exam>> =
         flow {
@@ -212,9 +346,48 @@ class ExamRepository @Inject constructor(private val apiService: ApiService) {
             }
         }
 
+    suspend fun deleteAdminFromGroup(examId: Int, userId: Int): Flow<NetworkResult<Group>> =
+        flow {
+            try {
+                val response = apiService.deleteGroupAdmin(examId, userId)
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        emit(NetworkResult.Success(it))
+                    }
+                } else {
+                    emit(
+                        NetworkResult.Error(
+                            response.errorBody()?.toErrorMessage()?.message ?: "An error occurred"
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                emit(NetworkResult.Error(e.message ?: "An error occurred"))
+            }
+        }
+
     fun getExam(examId: Int): Flow<NetworkResult<Exam>> = flow {
         try {
             val response = apiService.getExam(examId)
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    emit(NetworkResult.Success(it))
+                }
+            } else {
+                emit(
+                    NetworkResult.Error(
+                        response.errorBody()?.toErrorMessage()?.message ?: "An error occurred"
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "An error occurred"))
+        }
+    }
+
+    fun getGroup(examId: Int): Flow<NetworkResult<Group>> = flow {
+        try {
+            val response = apiService.getGroup(examId)
             if (response.isSuccessful) {
                 response.body()?.let {
                     emit(NetworkResult.Success(it))
@@ -252,7 +425,10 @@ class ExamRepository @Inject constructor(private val apiService: ApiService) {
         }
 
 
-    suspend fun getStudentExamValidation(examId: Long, userId: Long): Flow<NetworkResult<StudentExamValidations>> = flow {
+    suspend fun getStudentExamValidation(
+        examId: Long,
+        userId: Long
+    ): Flow<NetworkResult<StudentExamValidations>> = flow {
         try {
             val response = apiService.getStudentExamValidation(examId, userId)
             if (response.isSuccessful) {
@@ -271,25 +447,25 @@ class ExamRepository @Inject constructor(private val apiService: ApiService) {
         }
     }
 
-    suspend fun addStudentExamValidation(studentExamValidations: StudentExamValidations): Flow<NetworkResult<StudentExamValidations>> = flow {
-        try {
-            val response = apiService.addStudentExamValidation(studentExamValidations)
-            if (response.isSuccessful) {
-                response.body()?.let {
-                    emit(NetworkResult.Success(it))
-                }
-            } else {
-                emit(
-                    NetworkResult.Error(
-                        response.errorBody()?.toErrorMessage()?.message ?: "An error occurred"
+    suspend fun addStudentExamValidation(studentExamValidations: StudentExamValidations): Flow<NetworkResult<StudentExamValidations>> =
+        flow {
+            try {
+                val response = apiService.addStudentExamValidation(studentExamValidations)
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        emit(NetworkResult.Success(it))
+                    }
+                } else {
+                    emit(
+                        NetworkResult.Error(
+                            response.errorBody()?.toErrorMessage()?.message ?: "An error occurred"
+                        )
                     )
-                )
+                }
+            } catch (e: Exception) {
+                emit(NetworkResult.Error(e.message ?: "An error occurred"))
             }
-        } catch (e: Exception) {
-            emit(NetworkResult.Error(e.message ?: "An error occurred"))
         }
-    }
-
 
 
 }

@@ -1,4 +1,4 @@
-package com.blink.blinkid.ui
+package com.blink.blinkid.ui.staff
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,59 +29,59 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.blink.blinkid.Navigation
-import com.blink.blinkid.model.Exam
 import com.blink.blinkid.commons.NetworkResult
-import com.blink.blinkid.viewmodel.ExamViewModel
+import com.blink.blinkid.model.Group
+import com.blink.blinkid.ui.teacher.HeaderText
+import com.blink.blinkid.viewmodel.GroupViewModel
 
 @Composable
-fun ExamListScreen(
+fun GroupListScreen(
     navController: NavController,
-    examViewModel: ExamViewModel,
+    groupViewModel: GroupViewModel,
 ) {
-    var examList by remember { mutableStateOf<List<Exam>>(emptyList()) }
+    var groupList by remember { mutableStateOf<List<Group>>(emptyList()) }
     var isLoading by remember { mutableStateOf(false) }
 
-    val result by examViewModel.exams.collectAsState(NetworkResult.Initial)
+    val result by groupViewModel.groups.collectAsState(NetworkResult.Initial)
 
     LaunchedEffect(true) {
-        examViewModel.getExams()
+        groupViewModel.getGroups()
     }
     when (result) {
         is NetworkResult.Success -> {
             isLoading = false
             Log.e(
-                "ExamListScreen",
-                "ExamListScreen: ${result as NetworkResult.Success<List<Exam>>}"
+                "GroupListScreen",
+                "GroupListScreen: ${result as NetworkResult.Success<List<Group>>}"
             )
-            examList = (result as NetworkResult.Success<List<Exam>>).body!!
+            groupList = (result as NetworkResult.Success<List<Group>>).body!!
         }
 
         is NetworkResult.Error -> {
             isLoading = false
 
             Log.e(
-                "ExamListScreen",
-                "ExamListScreen: ${result as NetworkResult.Error<List<Exam>>}"
+                "GroupListScreen",
+                "GroupListScreen: ${result as NetworkResult.Error<List<Group>>}"
             )
         }
 
         is NetworkResult.Loading -> {
-            Log.e("ExamListScreen", "ExamListScreen: loading...")
+            Log.e("GroupListScreen", "GroupListScreen: loading...")
             isLoading = true
         }
 
         else -> {
-            Log.e("ExamListScreen", "ExamListScreen: else...")
+            Log.e("GroupListScreen", "GroupListScreen: else...")
         }
     }
 
     Column {
-        HeaderText("Exams")
+        HeaderText("Groups")
 
 
         Box(
@@ -95,9 +93,9 @@ fun ExamListScreen(
             if (isLoading) {
                 ProgressBar()
             } else {
-                if (examList.isEmpty()) {
+                if (groupList.isEmpty()) {
                     Text(
-                        text = "No exams available",
+                        text = "No groups available",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
@@ -106,9 +104,9 @@ fun ExamListScreen(
                             .align(Alignment.Center)
                     )
                 } else {
-                    ExamList(examList) {
-                        examViewModel.setSelectedExam(it)
-                        navController.navigate(Navigation.Routes.EXAM_DETAIL + "/${it.id}")
+                    GroupList(groupList) {
+                        groupViewModel.setSelectedGroup(it)
+                        navController.navigate(Navigation.Routes.GROUP_DETAIL + "/${it.id}")
                     }
                 }
             }
@@ -119,15 +117,15 @@ fun ExamListScreen(
 
 
 @Composable
-fun ExamList(exams: List<Exam>, onUserClick: (Exam) -> Unit) {
-    Log.e("ExamList", "ExamList: $exams")
+fun GroupList(groups: List<Group>, onUserClick: (Group) -> Unit) {
+    Log.e("GroupList", "GroupList: $groups")
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(5.dp)
     ) {
-        exams.forEach { exam ->
-            ExamCard(exam, onUserClick)
+        groups.forEach { group ->
+            GroupCard(group, onUserClick)
         }
     }
 
@@ -149,7 +147,7 @@ fun ProgressBar() {
 }
 
 @Composable
-fun ExamCard(exam: Exam, onUserClick: (Exam) -> Unit) {
+fun GroupCard(group: Group, onUserClick: (Group) -> Unit) {
 
     Column(
         horizontalAlignment = Alignment.Start,
@@ -158,21 +156,19 @@ fun ExamCard(exam: Exam, onUserClick: (Exam) -> Unit) {
             .background(Color.White, RoundedCornerShape(15.dp))
             .graphicsLayer(shadowElevation = 2.0f)
             .padding(12.dp)
-            .clickable { onUserClick(exam) }
+            .clickable { onUserClick(group) }
     ) {
 
         Row(horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
-                text = exam.name, fontFamily = FontFamily.Default,
+                text = group.name, fontFamily = FontFamily.Default,
                 fontWeight = FontWeight.Bold,
                 fontSize = 25.sp
             )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(text = exam.examLocation)
         }
 
         Text(
-            text = exam.description,
+            text = group.description,
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp
@@ -182,16 +178,16 @@ fun ExamCard(exam: Exam, onUserClick: (Exam) -> Unit) {
 
         Row(horizontalArrangement = Arrangement.SpaceBetween) {
 
-            if (exam.admins.isNotEmpty())
+            if (group.admins.isNotEmpty())
                 Column(horizontalAlignment = Alignment.Start) {
                     Text(
-                        text = "Invigilator",
+                        text = "Staff",
                         color = Color.Gray,
                         fontSize = 9.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = exam.admins[0].username,
+                        text = group.admins[0].username,
                         color = Color.Black,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
@@ -199,24 +195,6 @@ fun ExamCard(exam: Exam, onUserClick: (Exam) -> Unit) {
                 }
 
             Spacer(modifier = Modifier.weight(1f))
-
-            Column(horizontalAlignment = Alignment.Start) {
-                Text(
-                    text = exam.examDate,
-                    color = Color.Gray,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = exam.examTime,
-                    color = Color.Black,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-
-                )
-
-            }
 
         }
     }

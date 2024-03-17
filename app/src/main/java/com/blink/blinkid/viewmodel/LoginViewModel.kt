@@ -60,6 +60,18 @@ class LoginViewModel @Inject constructor(
         return false
     }
 
+    fun isStaff(): Boolean {
+        localDataStore.getObject(Constants.USER, object : TypeToken<User>() {})?.let {
+            it.roles.forEach { role ->
+                if (role.name.lowercase(Locale.ROOT).contains("staff", true)) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+
     fun getUser(): User? {
         return localDataStore.getObject(Constants.USER, object : TypeToken<User>() {})
     }

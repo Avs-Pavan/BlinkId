@@ -1,24 +1,16 @@
-package com.blink.blinkid.ui
+package com.blink.blinkid.ui.staff
 
 import android.util.Log
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -31,9 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -41,25 +31,25 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.blink.blinkid.Navigation
 import com.blink.blinkid.commons.NetworkResult
-import com.blink.blinkid.model.Exam
 import com.blink.blinkid.model.User
-import com.blink.blinkid.ui.theme.Purple40
-import com.blink.blinkid.viewmodel.ExamViewModel
-import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator.popBackStack
-import retrofit2.http.Header
+import com.blink.blinkid.ui.StudentList
+import com.blink.blinkid.ui.UserCardWithDelete
+import com.blink.blinkid.ui.teacher.CircularButton
+import com.blink.blinkid.ui.teacher.HeaderText
+import com.blink.blinkid.viewmodel.GroupViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
+fun GroupDetailsScreen(navController: NavController, viewModel: GroupViewModel) {
 
-    val exam by viewModel.selectedExam.collectAsState()
+    val group by viewModel.selectedGroup.collectAsState()
 
     var students by remember { mutableStateOf<List<User>>(emptyList()) }
 
     var isLoading by remember { mutableStateOf(false) }
 
-//    val examValidationsResult by viewModel.examValidations.collectAsState()
+//    val groupValidationsResult by viewModel.groupValidations.collectAsState()
 
 
     val studentsRes by viewModel.students.collectAsState()
@@ -90,7 +80,7 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
 
     Column {
 
-        HeaderText("Exam Details")
+        HeaderText("Group Details")
 
         Box(
             modifier = Modifier
@@ -100,8 +90,8 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
 
             Column(modifier = Modifier.fillMaxSize()) {
 
-                exam?.let {
-                    ExamCard(exam = it) {
+                group?.let {
+                    GroupCard(group = it) {
 
                     }
                 }
@@ -116,7 +106,7 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
                     modifier = Modifier.padding(start = 0.dp, top = 10.dp, bottom = 10.dp)
                 )
 
-                StudentList(false, exam?.admins ?: emptyList()) {
+                StudentList(false, group?.admins ?: emptyList()) {
                 }
 
                 Spacer(modifier = Modifier.padding(5.dp))
@@ -130,15 +120,15 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
                 )
 
                 LazyColumn {
-                    exam?.users?.let { list ->
+                    group?.users?.let { list ->
                         items(list.size) { student ->
                             UserCardWithDelete(list[student], { userId ->
-                                viewModel.deleteStudentFromExam(exam?.id!!, userId)
+                                viewModel.deleteStudentFromGroup(group?.id!!, userId)
                             },
                                 {
                                     viewModel.setSelectedUser(user = it)
-                                    Log.d("ExamDetailsScreen", "ExamDetailsScreen: ${it.username}")
-                                    navController.navigate(Navigation.Routes.STUDENT_EXAM_VERIFICATION)
+                                    Log.d("GroupDetailsScreen", "GroupDetailsScreen: ${it.username}")
+                                    navController.navigate(Navigation.Routes.STUDENT_GROUP_VERIFICATION)
                                 })
                         }
                     }
@@ -155,8 +145,8 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
                 icon = Icons.Default.Delete,
                 backgroundColor = Color.Red
             ) {
-                exam?.id?.let { examId ->
-                    viewModel.deleteExam(examId)
+                group?.id?.let { groupId ->
+                    viewModel.deleteGroup(groupId)
                     navController.popBackStack()
                 }
             }
@@ -173,12 +163,12 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
 
                         if (isLoading) {
                             // show loading
-                            ProgressBar()
+                            com.blink.blinkid.ui.teacher.ProgressBar()
                         } else {
                             StudentList(true, students) { user ->
                                 // add invigilator
-                                exam?.id?.let { examId ->
-                                    user.id?.let { viewModel.addStudentToExam(examId = examId, it) }
+                                group?.id?.let { groupId ->
+                                    user.id?.let { viewModel.addStudentToGroup(groupId = groupId, it) }
                                 }
                                 sheetVisible = false
                             }
@@ -193,50 +183,3 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
     }
 }
 
-@Composable
-fun CircularButton(
-    modifier: Modifier = Modifier,
-    icon: ImageVector = Icons.Default.Add,
-    backgroundColor: Color = MaterialTheme.colorScheme.primary,
-    foregroundColor: Color = Color.White,
-    onClick: () -> Unit,
-) {
-    Box(
-        modifier = modifier
-            .size(60.dp)
-            .clip(CircleShape)
-            .background(backgroundColor)
-            .clickable {
-                onClick()
-            }
-            .padding(10.dp)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = "Favorite Icon",
-            tint = foregroundColor,
-            modifier = Modifier.align(Alignment.Center)
-        )
-    }
-}
-
-
-@Composable
-fun HeaderText(text: String) {
-    Column(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.primary)
-            .fillMaxWidth()
-            .padding(10.dp)
-    ) {
-        Text(
-            text = text,
-            fontFamily = FontFamily.Default,
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
-            fontSize = 25.sp,
-            modifier = Modifier.padding(start = 5.dp, top = 10.dp, bottom = 10.dp)
-        )
-    }
-
-}

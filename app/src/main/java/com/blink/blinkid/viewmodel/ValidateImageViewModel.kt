@@ -1,9 +1,13 @@
 package com.blink.blinkid.viewmodel
 
+import android.app.Application
+import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blink.blinkid.commons.FileUtil
 import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.model.StudentExamValidations
 import com.blink.blinkid.model.ValidateStudentRequest
@@ -11,6 +15,11 @@ import com.blink.blinkid.repo.ExamRepository
 import com.blink.blinkid.repo.ValidationRepository
 import com.google.firebase.storage.StorageReference
 import dagger.hilt.android.lifecycle.HiltViewModel
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.format
+import id.zelory.compressor.constraint.quality
+import id.zelory.compressor.constraint.resolution
+import id.zelory.compressor.constraint.size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,8 +33,8 @@ import javax.inject.Inject
 class ValidateImageViewModel @Inject constructor(
     private val storageReference: StorageReference,
     private val validationRepository: ValidationRepository,
-    private val examRepository: ExamRepository
-
+    private val examRepository: ExamRepository,
+    private val application: Application
 ) :
     ViewModel() {
 
@@ -115,13 +124,20 @@ class ValidateImageViewModel @Inject constructor(
 
     private suspend fun uploadImageAsync(part: Uri, imageUploadCallback: (String) -> Unit) {
 
+        val actualPart = FileUtil.from(application.applicationContext, part)
+        val compressed = Compressor.compress(application.applicationContext, actualPart) {
+            resolution(512,512)
+            format(Bitmap.CompressFormat.JPEG)
+            quality(80)
+            size(204_800)
+        }
         val ref = storageReference
             .child(
                 "images/"
-                        + UUID.randomUUID().toString()
+                        + UUID.randomUUID().toString()+".jpeg"
             )
 
-        ref.putFile(part)
+        ref.putFile(compressed.toUri())
             .addOnSuccessListener {
                 val task = it.storage.downloadUrl
                 task.addOnSuccessListener { uri ->

@@ -1,4 +1,4 @@
-package com.blink.blinkid.ui
+package com.blink.blinkid.ui.staff
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,15 +22,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.blink.blinkid.model.Exam
 import com.blink.blinkid.commons.NetworkResult
-import com.blink.blinkid.viewmodel.ExamViewModel
+import com.blink.blinkid.model.Group
+import com.blink.blinkid.ui.teacher.HeaderText
+import com.blink.blinkid.ui.teacher.ProgressBar
+import com.blink.blinkid.viewmodel.GroupViewModel
 
 
 @Composable
-fun AddExamScreen(
+fun AddGroupScreen(
     navController: NavController,
-    viewModel: ExamViewModel = hiltViewModel()
+    viewModel: GroupViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     var toastMessage by remember { mutableStateOf("") }
@@ -43,7 +44,7 @@ fun AddExamScreen(
         }
     }
 
-    val response by viewModel.exam.collectAsState(initial = NetworkResult.Initial)
+    val response by viewModel.group.collectAsState(initial = NetworkResult.Initial)
 
     LaunchedEffect(response) {
         when (response) {
@@ -65,10 +66,6 @@ fun AddExamScreen(
 
     var name by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    var date by remember { mutableStateOf("") }
-    var time by remember { mutableStateOf("") }
-    var location by remember { mutableStateOf("") }
-    var duration by remember { mutableStateOf("") }
 
     Column {
         HeaderText(text = "Add Exam")
@@ -96,59 +93,19 @@ fun AddExamScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = date,
-                onValueChange = { date = it },
-                label = { Text("Date") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = time,
-                onValueChange = { time = it },
-                label = { Text("Time") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = location,
-                onValueChange = { location = it },
-                label = { Text("Location") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = duration,
-                onValueChange = { duration = it },
-                label = { Text("Duration") },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth()
-            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 onClick = {
-                    if (name.isEmpty() || description.isEmpty() || date.isEmpty()) {
+                    if (name.isEmpty() || description.isEmpty()) {
                         toastMessage = "Please fill all fields"
                     } else {
-                        viewModel.addExam(
-                            Exam(
+                        viewModel.addGroup(
+                            Group(
                                 name = name,
                                 description = description,
-                                examDate = date,
-                                examTime = time,
-                                examLocation = location,
-                                examDuration = duration
                             )
                         )
                     }

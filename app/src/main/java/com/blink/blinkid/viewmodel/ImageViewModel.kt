@@ -13,7 +13,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.default
 import id.zelory.compressor.constraint.format
+import id.zelory.compressor.constraint.quality
 import id.zelory.compressor.constraint.resolution
+import id.zelory.compressor.constraint.size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,6 +47,8 @@ class ImageViewModel @Inject constructor(
             val compressed = Compressor.compress(application.applicationContext, actualPart) {
                 resolution(512,512)
                 format(Bitmap.CompressFormat.JPEG)
+                quality(80)
+                size(204_800)
             }
             uploadImageAsync(compressed)
         }

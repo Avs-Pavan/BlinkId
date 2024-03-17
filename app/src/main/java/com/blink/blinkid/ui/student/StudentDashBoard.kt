@@ -29,10 +29,10 @@ import androidx.navigation.NavController
 import com.blink.blinkid.Navigation
 import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.model.Exam
-import com.blink.blinkid.ui.CircularButton
-import com.blink.blinkid.ui.ExamList
-import com.blink.blinkid.ui.HeaderText
-import com.blink.blinkid.ui.ProgressBar
+import com.blink.blinkid.ui.teacher.CircularButton
+import com.blink.blinkid.ui.teacher.ExamList
+import com.blink.blinkid.ui.teacher.HeaderText
+import com.blink.blinkid.ui.teacher.ProgressBar
 import com.blink.blinkid.viewmodel.LoginViewModel
 import com.blink.blinkid.viewmodel.StudentViewModel
 
@@ -56,8 +56,8 @@ fun StudentDashBoard(
         is NetworkResult.Success -> {
             isLoading = false
             Log.e(
-                "ExamListScreen",
-                "ExamListScreen: ${result as NetworkResult.Success<List<Exam>>}"
+                "StudentDashBoard",
+                "StudentDashBoard: ${result as NetworkResult.Success<List<Exam>>}"
             )
             examList = (result as NetworkResult.Success<List<Exam>>).body!!
         }
@@ -66,18 +66,18 @@ fun StudentDashBoard(
             isLoading = false
 
             Log.e(
-                "ExamListScreen",
-                "ExamListScreen: ${result as NetworkResult.Error<List<Exam>>}"
+                "StudentDashBoard",
+                "StudentDashBoard: ${result as NetworkResult.Error<List<Exam>>}"
             )
         }
 
         is NetworkResult.Loading -> {
-            Log.e("ExamListScreen", "ExamListScreen: loading...")
+            Log.e("StudentDashBoard", "StudentDashBoard: loading...")
             isLoading = true
         }
 
         else -> {
-            Log.e("ExamListScreen", "ExamListScreen: else...")
+            Log.e("StudentDashBoard", "StudentDashBoard: else...")
         }
     }
 
@@ -97,7 +97,7 @@ fun StudentDashBoard(
             } else {
                 if (examList.isEmpty()) {
                     Text(
-                        text = "No exams available",
+                        text = "No exams for now. Enjoy :)",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,

@@ -36,6 +36,8 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {
     if (loginViewModel.isLoggedIn()) {
         if (loginViewModel.isTeacher())
             navController.navigate(Navigation.Routes.HOME)
+        else if (loginViewModel.isStaff())
+            navController.navigate(Navigation.Routes.STAFF_HOME)
         else
             navController.navigate(Navigation.Routes.STUDENT_DASHBOARD)
     }
@@ -61,6 +63,8 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {
                 toastMessage = "Login successful"
                 if (loginViewModel.isTeacher())
                     navController.navigate(Navigation.Routes.HOME)
+                else if (loginViewModel.isStaff())
+                    navController.navigate(Navigation.Routes.STAFF_HOME)
                 else
                     navController.navigate(Navigation.Routes.STUDENT_DASHBOARD)
             }

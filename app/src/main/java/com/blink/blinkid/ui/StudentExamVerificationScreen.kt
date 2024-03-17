@@ -49,6 +49,9 @@ import coil.request.ImageRequest
 import com.blink.blinkid.BuildConfig
 import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.model.StudentExamValidations
+import com.blink.blinkid.ui.teacher.ExamCard
+import com.blink.blinkid.ui.teacher.HeaderText
+import com.blink.blinkid.ui.teacher.ProgressBar
 import com.blink.blinkid.viewmodel.ExamViewModel
 import com.blink.blinkid.viewmodel.ValidateImageViewModel
 import java.util.Objects

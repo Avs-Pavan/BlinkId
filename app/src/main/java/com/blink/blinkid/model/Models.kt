@@ -48,6 +48,15 @@ data class Exam(
     var examValidations: List<StudentExamValidations> = emptyList()
 )
 
+data class Group(
+    val admins: List<User> = emptyList(),
+    val description: String,
+    val id: Int? = null,
+    val name: String,
+    val users: List<User> = emptyList(),
+    var examValidations: List<StudentExamValidations> = emptyList()
+)
+
 data class AddStudentRequest(
     val email: String,
     val password: String,

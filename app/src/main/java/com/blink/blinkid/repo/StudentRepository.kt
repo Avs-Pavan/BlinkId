@@ -7,6 +7,7 @@ import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.commons.toErrorMessage
 import com.blink.blinkid.model.Constants
 import com.blink.blinkid.model.Exam
+import com.blink.blinkid.model.Group
 import com.blink.blinkid.model.network.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -31,5 +32,26 @@ class StudentRepository @Inject constructor(private val apiService: ApiService,p
             emit(NetworkResult.Error(e.message ?: "An error occurred"))
         }
     }
+
+    suspend fun getStudentGroups(): Flow<NetworkResult<List<Group>>> = flow {
+        try {
+            val response = apiService.getStudentGroups(localDataStore.getInt(Constants.USER_ID,0))
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    emit(NetworkResult.Success(it))
+                }
+            } else {
+                emit(
+                    NetworkResult.Error(
+                        response.errorBody()?.toErrorMessage()?.message ?: "An error occurred"
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "An error occurred"))
+        }
+    }
+
+
 
 }
