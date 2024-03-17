@@ -1,4 +1,4 @@
-package com.blink.blinkid.ui
+package com.blink.blinkid.ui.staff
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -49,22 +49,23 @@ import coil.request.ImageRequest
 import com.blink.blinkid.BuildConfig
 import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.model.StudentExamValidations
-import com.blink.blinkid.ui.teacher.ExamCard
+import com.blink.blinkid.ui.UserCard
+import com.blink.blinkid.ui.createImageFile
 import com.blink.blinkid.ui.teacher.HeaderText
-import com.blink.blinkid.ui.teacher.ProgressBar
 import com.blink.blinkid.viewmodel.ExamViewModel
+import com.blink.blinkid.viewmodel.GroupViewModel
 import com.blink.blinkid.viewmodel.ValidateImageViewModel
 import java.util.Objects
 
 
 @Composable
-fun StudentExamVerificationScreen(
+fun StudentGroupVerificationScreen(
     navController: NavController,
-    viewModel: ExamViewModel,
+    viewModel: GroupViewModel,
     validateImageViewModel: ValidateImageViewModel = hiltViewModel()
 ) {
 
-    val exam by viewModel.selectedExam.collectAsState()
+    val exam by viewModel.selectedGroup.collectAsState()
 
     val student by viewModel.selectedUser.collectAsState()
 
@@ -76,7 +77,7 @@ fun StudentExamVerificationScreen(
     LaunchedEffect(res){
         if (res is NetworkResult.Success) {
             Toast.makeText(context, "Validation success", Toast.LENGTH_SHORT).show()
-            exam?.let { viewModel.setSelectedExam(it) }
+            exam?.let { viewModel.setSelectedGroup(it) }
             navController.popBackStack()
         } else if (res is NetworkResult.Error) {
             Toast.makeText(context, (res as NetworkResult.Error<StudentExamValidations>).errorMessage, Toast.LENGTH_SHORT).show()
@@ -132,7 +133,7 @@ fun StudentExamVerificationScreen(
             Spacer(modifier = Modifier.padding(5.dp))
 
             exam?.let {
-                ExamCard(exam = it) {
+                GroupCard(group = it) {
 
                 }
             }

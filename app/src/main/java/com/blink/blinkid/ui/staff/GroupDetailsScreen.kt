@@ -49,8 +49,6 @@ fun GroupDetailsScreen(navController: NavController, viewModel: GroupViewModel) 
 
     var isLoading by remember { mutableStateOf(false) }
 
-//    val groupValidationsResult by viewModel.groupValidations.collectAsState()
-
 
     val studentsRes by viewModel.students.collectAsState()
 

@@ -19,13 +19,13 @@ import com.blink.blinkid.ui.theme.BlinkIdTheme
 import com.blink.blinkid.ui.teacher.ExamListScreen
 import com.blink.blinkid.ui.teacher.HomeScreen
 import com.blink.blinkid.ui.LoginScreen
-import com.blink.blinkid.ui.StudentExamVerificationScreen
+import com.blink.blinkid.ui.teacher.StudentExamVerificationScreen
 import com.blink.blinkid.ui.StudentListScreen
 import com.blink.blinkid.ui.staff.AddGroupScreen
 import com.blink.blinkid.ui.staff.GroupDetailsScreen
-import com.blink.blinkid.ui.staff.GroupList
 import com.blink.blinkid.ui.staff.GroupListScreen
 import com.blink.blinkid.ui.staff.StaffHomeScreen
+import com.blink.blinkid.ui.staff.StudentGroupVerificationScreen
 import com.blink.blinkid.ui.student.StudentDashBoard
 import com.blink.blinkid.viewmodel.ExamViewModel
 import com.blink.blinkid.viewmodel.GroupViewModel
@@ -108,6 +108,9 @@ fun MyApp() {
         }
         composable(Navigation.Routes.GROUP_DETAIL + "/{examId}") {
             GroupDetailsScreen(navController, groupViewModel)
+        }
+        composable(Navigation.Routes.STUDENT_GROUP_VERIFICATION) {
+            StudentGroupVerificationScreen(navController, groupViewModel)
         }
     }
 }
