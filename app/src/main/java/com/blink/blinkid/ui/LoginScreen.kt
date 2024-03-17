@@ -1,11 +1,13 @@
 package com.blink.blinkid.ui
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -19,11 +21,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.blink.blinkid.Navigation
+import com.blink.blinkid.R
 import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.viewmodel.LoginViewModel
 
@@ -93,6 +97,14 @@ fun LoginScreen(navController: NavController, loginViewModel: LoginViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
+        Image(
+            painter = painterResource(id = R.drawable.login),
+            contentDescription = "",
+            modifier = Modifier
+                .size(300.dp)
+                .padding(8.dp)
+            )
         Text(
             text = "Login",
             fontSize = 24.sp,

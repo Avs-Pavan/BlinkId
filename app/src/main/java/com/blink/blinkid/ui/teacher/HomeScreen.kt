@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.blink.blinkid.Navigation
+import com.blink.blinkid.R
+import com.blink.blinkid.ui.staff.MenuOptionCard
 import com.blink.blinkid.ui.teacher.HeaderText
 import com.blink.blinkid.viewmodel.LoginViewModel
 
@@ -46,6 +48,7 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
                     .fillMaxWidth()
                     .padding(8.dp)
             ) {
+
                 Text(text = "Exams")
             }
 
