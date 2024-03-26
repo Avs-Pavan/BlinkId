@@ -72,13 +72,17 @@ fun StudentExamVerificationScreen(
     val error by validateImageViewModel.error.collectAsState()
 
     val context = LocalContext.current
-    LaunchedEffect(res){
+    LaunchedEffect(res) {
         if (res is NetworkResult.Success) {
             Toast.makeText(context, "Validation success", Toast.LENGTH_SHORT).show()
             exam?.let { viewModel.setSelectedExam(it) }
             navController.popBackStack()
         } else if (res is NetworkResult.Error) {
-            Toast.makeText(context, (res as NetworkResult.Error<StudentExamValidations>).errorMessage, Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                (res as NetworkResult.Error<StudentExamValidations>).errorMessage,
+                Toast.LENGTH_SHORT
+            ).show()
         } else if (error.isNotEmpty()) {
             Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
         }
@@ -170,7 +174,7 @@ fun StudentExamVerificationScreen(
 
             exam?.examValidations?.let { validations ->
                 if (validations.any { it.studentId == student?.id }) {
-                    LazyColumn{
+                    LazyColumn {
                         items(validations.filter { it.studentId == student?.id }.size) { validation ->
                             UserValidationRow(studentExamValidations = validations.filter { it.studentId == student?.id }[validation])
                             Spacer(modifier = Modifier.height(5.dp))
@@ -196,7 +200,7 @@ fun UserValidationRow(studentExamValidations: StudentExamValidations) {
             .background(Color.White, RoundedCornerShape(15.dp))
             .graphicsLayer(shadowElevation = 2.0f)
             .fillMaxWidth()
-            .background(if (studentExamValidations.status) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error)
+            .background(if (studentExamValidations.status) Color(0xFF35704D) else MaterialTheme.colorScheme.error)
             .padding(12.dp)
 
     ) {

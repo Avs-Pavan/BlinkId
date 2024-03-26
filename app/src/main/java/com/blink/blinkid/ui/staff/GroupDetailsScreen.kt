@@ -32,8 +32,10 @@ import androidx.navigation.NavController
 import com.blink.blinkid.Navigation
 import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.model.User
+import com.blink.blinkid.ui.ConfirmationDialog
 import com.blink.blinkid.ui.StudentList
 import com.blink.blinkid.ui.UserCardWithDelete
+import com.blink.blinkid.ui.rememberConfirmationDialogState
 import com.blink.blinkid.ui.teacher.CircularButton
 import com.blink.blinkid.ui.teacher.HeaderText
 import com.blink.blinkid.viewmodel.GroupViewModel
@@ -97,7 +99,7 @@ fun GroupDetailsScreen(navController: NavController, viewModel: GroupViewModel) 
                 Spacer(modifier = Modifier.padding(5.dp))
 
                 Text(
-                    text = "Invigilators",
+                    text = "Staff Member",
                     fontFamily = FontFamily.Default,
                     fontWeight = FontWeight.Bold,
                     fontSize = 25.sp,
@@ -125,7 +127,10 @@ fun GroupDetailsScreen(navController: NavController, viewModel: GroupViewModel) 
                             },
                                 {
                                     viewModel.setSelectedUser(user = it)
-                                    Log.d("GroupDetailsScreen", "GroupDetailsScreen: ${it.username}")
+                                    Log.d(
+                                        "GroupDetailsScreen",
+                                        "GroupDetailsScreen: ${it.username}"
+                                    )
                                     navController.navigate(Navigation.Routes.STUDENT_GROUP_VERIFICATION)
                                 })
                         }
@@ -134,18 +139,30 @@ fun GroupDetailsScreen(navController: NavController, viewModel: GroupViewModel) 
 
             }
             var sheetVisible by remember { mutableStateOf(false) }
+            val confirmationDialogState = rememberConfirmationDialogState()
 
             CircularButton(modifier = Modifier.align(Alignment.BottomEnd)) {
                 sheetVisible = true
             }
+            if (confirmationDialogState.value) {
+                ConfirmationDialog(
+                    dialogState = confirmationDialogState,
+                    onConfirmClick = {
+                        viewModel.deleteGroup(group?.id!!)
+                        navController.popBackStack()
+                    },
+                    title = "Delete group",
+                    text = "Are you sure you want to delete group?"
+                )
+            }
+
             CircularButton(
                 modifier = Modifier.align(Alignment.BottomStart),
                 icon = Icons.Default.Delete,
                 backgroundColor = Color.Red
             ) {
-                group?.id?.let { groupId ->
-                    viewModel.deleteGroup(groupId)
-                    navController.popBackStack()
+                group?.id?.let {
+                    confirmationDialogState.showConfirmationDialog()
                 }
             }
 
@@ -163,10 +180,17 @@ fun GroupDetailsScreen(navController: NavController, viewModel: GroupViewModel) 
                             // show loading
                             com.blink.blinkid.ui.teacher.ProgressBar()
                         } else {
-                            StudentList(true, students) { user ->
+                            StudentList(
+                                true,
+                                students.filter { user -> user.id !in group!!.users.map { it.id } }) { user ->
                                 // add invigilator
                                 group?.id?.let { groupId ->
-                                    user.id?.let { viewModel.addStudentToGroup(groupId = groupId, it) }
+                                    user.id?.let {
+                                        viewModel.addStudentToGroup(
+                                            groupId = groupId,
+                                            it
+                                        )
+                                    }
                                 }
                                 sheetVisible = false
                             }

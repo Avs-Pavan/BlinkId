@@ -198,7 +198,7 @@ fun UserValidationRow(studentExamValidations: StudentExamValidations) {
             .background(Color.White, RoundedCornerShape(15.dp))
             .graphicsLayer(shadowElevation = 2.0f)
             .fillMaxWidth()
-            .background(if (studentExamValidations.status) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error)
+            .background(if (studentExamValidations.status) Color(0xFF35704D)  else MaterialTheme.colorScheme.error)
             .padding(12.dp)
 
     ) {

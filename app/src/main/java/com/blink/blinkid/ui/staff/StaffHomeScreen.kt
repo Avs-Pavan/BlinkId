@@ -34,6 +34,8 @@ import androidx.navigation.NavController
 import com.blink.blinkid.Navigation
 import com.blink.blinkid.R
 import com.blink.blinkid.model.Group
+import com.blink.blinkid.ui.ConfirmationDialog
+import com.blink.blinkid.ui.rememberConfirmationDialogState
 import com.blink.blinkid.ui.teacher.HeaderText
 import com.blink.blinkid.viewmodel.LoginViewModel
 
@@ -100,14 +102,26 @@ fun StaffHomeScreen(navController: NavController, loginViewModel: LoginViewModel
             ) {
                 Text(text = "Add student")
             }
+            val confirmationDialogState = rememberConfirmationDialogState()
+
+            if (confirmationDialogState.value) {
+                ConfirmationDialog(
+                    dialogState = confirmationDialogState,
+                    onConfirmClick = {
+                        loginViewModel.logout()
+                        navController.navigate(Navigation.Routes.LOGIN) {
+                            launchSingleTop = true
+                            restoreState = false
+                        }
+                    },
+                    title = "Logout",
+                    text = "Are you sure you want to logout?"
+                )
+            }
 
             Button(
                 onClick = {
-                    loginViewModel.logout()
-                    navController.navigate(Navigation.Routes.LOGIN) {
-                        launchSingleTop = true
-                        restoreState = false
-                    }
+                    confirmationDialogState.showConfirmationDialog()
                 },
                 modifier = Modifier
                     .fillMaxWidth()

@@ -41,8 +41,10 @@ import androidx.navigation.NavController
 import com.blink.blinkid.Navigation
 import com.blink.blinkid.commons.NetworkResult
 import com.blink.blinkid.model.User
+import com.blink.blinkid.ui.ConfirmationDialog
 import com.blink.blinkid.ui.StudentList
 import com.blink.blinkid.ui.UserCardWithDelete
+import com.blink.blinkid.ui.rememberConfirmationDialogState
 import com.blink.blinkid.viewmodel.ExamViewModel
 
 
@@ -89,6 +91,21 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
 
         HeaderText("Exam Details")
 
+        val confirmationDialogState = rememberConfirmationDialogState()
+
+        if (confirmationDialogState.value) {
+            ConfirmationDialog(
+                dialogState = confirmationDialogState,
+                onConfirmClick = {
+                    exam?.id?.let { examId ->
+                        viewModel.deleteExam(examId)
+                        navController.popBackStack()
+                    }
+                },
+                title = "Delete",
+                text = "Are you sure you want to delete?"
+            )
+        }
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -106,7 +123,7 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
                 Spacer(modifier = Modifier.padding(5.dp))
 
                 Text(
-                    text = "Invigilators",
+                    text = "Invigilator",
                     fontFamily = FontFamily.Default,
                     fontWeight = FontWeight.Bold,
                     fontSize = 25.sp,
@@ -152,10 +169,7 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
                 icon = Icons.Default.Delete,
                 backgroundColor = Color.Red
             ) {
-                exam?.id?.let { examId ->
-                    viewModel.deleteExam(examId)
-                    navController.popBackStack()
-                }
+                confirmationDialogState.showConfirmationDialog()
             }
 
             if (sheetVisible) {
@@ -172,7 +186,7 @@ fun ExamDetailsScreen(navController: NavController, viewModel: ExamViewModel) {
                             // show loading
                             ProgressBar()
                         } else {
-                            StudentList(true, students) { user ->
+                            StudentList(true, students.filter { user -> user.id !in exam!!.users.map { it.id } }) { user ->
                                 // add invigilator
                                 exam?.id?.let { examId ->
                                     user.id?.let { viewModel.addStudentToExam(examId = examId, it) }
