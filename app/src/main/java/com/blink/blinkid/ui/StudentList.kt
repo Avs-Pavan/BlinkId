@@ -14,9 +14,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -135,7 +138,9 @@ fun UserCard(user: User, onUserClick: (User) -> Unit) {
 }
 
 @Composable
-fun UserCardWithDelete(user: User, deleteUser: (Int) -> Unit, onUserClick: (User) -> Unit){
+fun UserCardWithDelete(user: User, deleteUser: (Int) -> Unit, onUserClick: (User) -> Unit) {
+
+    val confirmationDialogState = rememberConfirmationDialogState()
 
     Row(modifier = Modifier
         .background(Color.White, RoundedCornerShape(15.dp))
@@ -198,7 +203,9 @@ fun UserCardWithDelete(user: User, deleteUser: (Int) -> Unit, onUserClick: (User
                     color = Color.Red,
                     fontSize = 14.sp,
                     modifier = Modifier.clickable {
-                        user.id?.let { deleteUser(it) }
+                        user.id?.let {
+                            confirmationDialogState.showConfirmationDialog()
+                        }
                     }
                 )
             }
@@ -206,4 +213,72 @@ fun UserCardWithDelete(user: User, deleteUser: (Int) -> Unit, onUserClick: (User
         }
     }
     Spacer(modifier = Modifier.height(10.dp))
+
+    if (confirmationDialogState.value) {
+        ConfirmationDialog(
+            dialogState = confirmationDialogState,
+            onConfirmClick = {
+                user.id?.let {
+                    deleteUser(it)
+                }
+            },
+            title = "Delete User",
+            text = "Are you sure you want to delete ${user.username}?"
+        )
+    }
+}
+
+@Composable
+fun ConfirmationDialog(
+    dialogState: ConfirmationDialogState,
+    onConfirmClick: () -> Unit,
+    title: String,
+    text: String,
+    modifier: Modifier = Modifier
+) {
+    AlertDialog(
+        onDismissRequest = { dialogState.dismissDialog() },
+        title = { Text(title) },
+        text = { Text(text) },
+        modifier = modifier,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmClick()
+                    dialogState.dismissDialog()
+                }
+            ) {
+                Text("Confirm")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = { dialogState.dismissDialog() }
+            ) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
+class ConfirmationDialogState(
+    private val initialValue: Boolean = false
+) : State<Boolean> {
+    private val data = mutableStateOf(initialValue)
+    override val value: Boolean get() = data.value
+
+    fun showConfirmationDialog() {
+        data.value = true
+    }
+
+    fun dismissDialog() {
+        data.value = false
+    }
+}
+
+@Composable
+fun rememberConfirmationDialogState(
+    initialValue: Boolean = false
+) = remember {
+    ConfirmationDialogState(initialValue)
 }
