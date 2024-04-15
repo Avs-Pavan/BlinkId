@@ -88,8 +88,9 @@ class ValidateImageViewModel @Inject constructor(
                                                     ).collect {
                                                         _result.value = it
                                                     }
+                                                    _error.value = "Validation failed"
                                                 }
-                                                _error.value = "Validation failed"
+
                                             }
                                         }
 

@@ -72,9 +72,9 @@ fun StudentExamVerificationScreen(
     val error by validateImageViewModel.error.collectAsState()
 
     val context = LocalContext.current
-    LaunchedEffect(res) {
+    LaunchedEffect(res, error) {
         if (res is NetworkResult.Success) {
-            Toast.makeText(context, "Validation success", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(context, "Validation success", Toast.LENGTH_SHORT).show()
             exam?.let { viewModel.setSelectedExam(it) }
             navController.popBackStack()
         } else if (res is NetworkResult.Error) {
@@ -83,7 +83,8 @@ fun StudentExamVerificationScreen(
                 (res as NetworkResult.Error<StudentExamValidations>).errorMessage,
                 Toast.LENGTH_SHORT
             ).show()
-        } else if (error.isNotEmpty()) {
+        }
+        if (error.isNotEmpty()) {
             Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
         }
     }
