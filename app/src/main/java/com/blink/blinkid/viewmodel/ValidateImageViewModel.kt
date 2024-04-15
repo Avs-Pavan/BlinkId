@@ -91,7 +91,6 @@ class ValidateImageViewModel @Inject constructor(
                                                 }
                                                 _error.value = "Validation failed"
                                             }
-
                                         }
 
                                         is NetworkResult.Error -> {

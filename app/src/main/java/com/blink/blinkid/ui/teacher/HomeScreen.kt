@@ -44,8 +44,8 @@ fun HomeScreen(navController: NavController, loginViewModel: LoginViewModel) {
                         restoreState = false
                     }
                 },
-                title = "Delete",
-                text = "Are you sure you want to delete?"
+                title = "Logout",
+                text = "Are you sure you want to Logout?"
             )
         }
         Column(
